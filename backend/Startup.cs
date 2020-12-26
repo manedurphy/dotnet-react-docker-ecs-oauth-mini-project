@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,6 +26,18 @@ namespace backend
 
     public void ConfigureServices(IServiceCollection services)
     {
+      //   services.AddAuthentication(o =>
+      //   {
+      //     o.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+      //     o.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+      //     o.DefaultChallengeScheme = "GitHub";
+      //   }).AddCookie().AddOAuth("GitHub", o =>
+      //   {
+      //     o.ClientId = Configuration["GitHub:ClientId"];
+      //     o.ClientSecret = Configuration["GitHub:ClientSecret"];
+      //   });
+
+      services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(o => o.LoginPath = new Microsoft.AspNetCore.Http.PathString("/account/login"));
 
       services.AddControllers();
       services.AddSwaggerGen(c =>
@@ -46,6 +59,7 @@ namespace backend
 
       app.UseRouting();
 
+      app.UseAuthentication();
       app.UseAuthorization();
 
       app.UseEndpoints(endpoints =>
