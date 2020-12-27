@@ -26,7 +26,7 @@ namespace backend.Services
         {
           new Claim(ClaimTypes.NameIdentifier, UserId.ToString())
         }),
-        Expires = DateTime.UtcNow.AddDays(7),
+        Expires = DateTime.UtcNow.AddSeconds(30),
         SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
       };
 

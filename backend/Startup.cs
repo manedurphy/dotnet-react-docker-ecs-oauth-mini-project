@@ -50,7 +50,9 @@ namespace backend
           ValidateIssuerSigningKey = true,
           ValidateIssuer = false,
           ValidateAudience = false,
-          IssuerSigningKey = mySecurityKey
+          IssuerSigningKey = mySecurityKey,
+          ValidateLifetime = true,
+          ClockSkew = TimeSpan.Zero
         };
 
       });

@@ -14,7 +14,6 @@ namespace backend.Services
     List<User> GetUsers();
     User GetUserById(string id);
     User GetUserByEmail(string email);
-    User GetUserByRefreshToken(string refreshToken);
     User CreateUser(User user);
     void UpdateRefreshToken(User user);
   }
@@ -51,11 +50,6 @@ namespace backend.Services
     {
       _users.InsertOne(user);
       return user;
-    }
-
-    public User GetUserByRefreshToken(string refreshToken)
-    {
-      return _users.Find(user => user.RefreshToken == refreshToken).FirstOrDefault();
     }
 
     public void UpdateRefreshToken(User user)

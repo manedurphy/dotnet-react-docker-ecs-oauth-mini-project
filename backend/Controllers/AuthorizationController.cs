@@ -65,14 +65,19 @@ namespace backend.Controllers
 
       var token = _tokenService.GenerateToken(user.Id);
 
-      return Ok(new AuthResponse(user.FirstName, token, user.RefreshToken));
+      return Ok(new AuthResponse(user.FirstName, user.Email, token, user.RefreshToken));
     }
 
     [HttpPost("refresh")]
-    public ActionResult<string> GetNewToken(RefreshTokenRequest refreshTokenRequest)
+    public ActionResult<AuthResponse> GetNewToken(RefreshTokenRequest refreshTokenRequest)
     {
-      var user = _userService.GetUserByRefreshToken(refreshTokenRequest.RefreshToken);
+      var user = _userService.GetUserByEmail(refreshTokenRequest.Email);
       if (user == null)
+      {
+        return BadRequest("Invalid request");
+      }
+
+      if (user.RefreshToken != refreshTokenRequest.RefreshToken)
       {
         return BadRequest("Invalid request");
       }
@@ -83,7 +88,7 @@ namespace backend.Controllers
       user.RefreshToken = newRefreshToken;
       _userService.UpdateRefreshToken(user);
 
-      return Ok(new AuthResponse(user.FirstName, newToken, newRefreshToken));
+      return Ok(new AuthResponse(user.FirstName, user.Email, newToken, newRefreshToken));
     }
     // [HttpPost("logout")]
     // public async Task<IActionResult> Logout()
