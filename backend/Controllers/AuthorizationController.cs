@@ -1,16 +1,13 @@
 using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using backend.Services;
 using backend.DTOS;
 using backend.ResponseMessages;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using backend.Models;
+using MongoDB.Driver;
 
 namespace backend.Controllers
 {
@@ -68,7 +65,25 @@ namespace backend.Controllers
 
       var token = _tokenService.GenerateToken(user.Id);
 
-      return Ok(new AuthResponse(user.FirstName, token));
+      return Ok(new AuthResponse(user.FirstName, token, user.RefreshToken));
+    }
+
+    [HttpPost("refresh")]
+    public ActionResult<string> GetNewToken(RefreshTokenRequest refreshTokenRequest)
+    {
+      var user = _userService.GetUserByRefreshToken(refreshTokenRequest.RefreshToken);
+      if (user == null)
+      {
+        return BadRequest("Invalid request");
+      }
+
+      var newToken = _tokenService.GenerateToken(user.Id);
+      var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+      user.RefreshToken = newRefreshToken;
+      _userService.UpdateRefreshToken(user);
+
+      return Ok(new AuthResponse(user.FirstName, newToken, newRefreshToken));
     }
     // [HttpPost("logout")]
     // public async Task<IActionResult> Logout()
