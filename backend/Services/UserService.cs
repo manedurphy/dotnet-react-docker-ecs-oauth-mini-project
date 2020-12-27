@@ -8,8 +8,16 @@ using MongoDB.Driver;
 
 namespace backend.Services
 {
-  public class UserService
+  public interface IUserService
   {
+    List<User> GetUsers();
+    User GetUserById(string id);
+    User GetUserByEmail(string email);
+    User CreateUser(User user);
+  }
+  public class UserService : IUserService
+  {
+
     private readonly IMongoCollection<User> _users;
 
     public UserService()
@@ -24,6 +32,7 @@ namespace backend.Services
     {
       return _users.Find(user => true).ToList();
     }
+
     [ActionName(nameof(GetUserById))]
     public User GetUserById(string id)
     {

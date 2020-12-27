@@ -1,28 +1,23 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoMapper;
 using backend.Services;
 using backend.DTOS;
 using backend.Models;
 using backend.ResponseMessages;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
 {
   [ApiController]
   [Route("api/[controller]")]
-  public class AccountsController : ControllerBase
+  public class UsersController : ControllerBase
   {
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
+    private readonly ITokenService _tokenService;
     private readonly IMapper _mapper;
-    public AccountsController(UserService userService, IMapper mapper)
+    public UsersController(IUserService userService, ITokenService tokenService, IMapper mapper)
     {
       _userService = userService;
+      _tokenService = tokenService;
       _mapper = mapper;
     }
 
@@ -49,12 +44,14 @@ namespace backend.Controllers
         return BadRequest(ResponseMessage.UserResponseMessage.BadPassword);
       }
 
+      var refreshToken = _tokenService.GenerateRefreshToken();
       var user = _mapper.Map<User>(userSendDto);
+
+      user.RefreshToken = refreshToken;
       _userService.CreateUser(user);
 
       var userReadDto = _mapper.Map<UserReadDto>(user);
       return CreatedAtAction("GetUser", new { id = userReadDto.Id.ToString() }, userReadDto);
     }
-
   }
 }

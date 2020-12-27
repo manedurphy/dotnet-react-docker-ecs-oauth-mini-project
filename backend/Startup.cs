@@ -2,7 +2,6 @@ using System;
 using System.Text;
 using AutoMapper;
 using backend.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,22 +37,26 @@ namespace backend
       });
 
       services.AddControllers();
-      services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+      services.AddAuthentication(opt =>
       {
-        opt.Audience = "http://localhost:5500";
-        opt.Authority = "http://localhost:8080";
+        opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+      }).AddJwtBearer(opt =>
+      {
+        opt.SaveToken = true;
         opt.RequireHttpsMetadata = false;
         opt.TokenValidationParameters = new TokenValidationParameters
         {
-          ClockSkew = TimeSpan.FromMinutes(5),
-          IssuerSigningKey = mySecurityKey,
-          RequireSignedTokens = true,
-          RequireExpirationTime = true,
-          ValidateLifetime = true,
+          ValidateIssuerSigningKey = true,
+          ValidateIssuer = false,
+          ValidateAudience = false,
+          IssuerSigningKey = mySecurityKey
         };
+
       });
       services.AddAutoMapper(typeof(Startup));
-      services.AddSingleton<UserService>();
+      services.AddSingleton<IUserService, UserService>();
+      services.AddSingleton<ITokenService, TokenService>();
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "backend", Version = "v1" });

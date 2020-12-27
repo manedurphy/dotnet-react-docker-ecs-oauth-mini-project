@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace backend.Models
 {
-  public class Profile
+  public class OAuthProfile
   {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

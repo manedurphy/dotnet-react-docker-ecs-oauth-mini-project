@@ -4,7 +4,7 @@ using backend.Models;
 
 namespace backend.Profiles
 {
-  public class UsersProfile : AutoMapper.Profile
+  public class UsersProfile : Profile
   {
     public UsersProfile()
     {

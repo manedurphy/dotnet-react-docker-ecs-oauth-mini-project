@@ -8,25 +8,29 @@ using AutoMapper;
 using backend.Services;
 using backend.DTOS;
 using backend.ResponseMessages;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using backend.Models;
 
 namespace backend.Controllers
 {
   [ApiController]
-  [Route("api/auth")]
+  [Route("api/[controller]")]
   public class AuthorizationController : ControllerBase
   {
 
     private readonly string client_id = Environment.GetEnvironmentVariable("ClientId");
     private readonly string client_secret = Environment.GetEnvironmentVariable("ClientSecret");
-    private readonly UserService _userService;
+    private readonly string myIssuer = "http://localhost:8080";
+    private readonly string myAudience = "http://localhost:5500";
+    private readonly IUserService _userService;
+    private readonly ITokenService _tokenService;
     private readonly IMapper _mapper;
 
-    public AuthorizationController(UserService userService, IMapper mapper)
+    public AuthorizationController(IUserService userService, ITokenService tokenService, IMapper mapper)
     {
       _userService = userService;
+      _tokenService = tokenService;
       _mapper = mapper;
     }
 
@@ -62,79 +66,63 @@ namespace backend.Controllers
         return BadRequest(ResponseMessage.UserResponseMessage.BadLogin);
       }
 
-      var token = GenerateToken(user.Id);
+      var token = _tokenService.GenerateToken(user.Id);
 
-      // var identity = new ClaimsIdentity(JwtBearerDefaults.AuthenticationScheme);
-      // identity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
-
-      // await HttpContext.SignInAsync(JwtBearerDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
-
-      // var userReadDto = _mapper.Map<UserReadDto>(user);
-
-
-      return Ok(token);
+      return Ok(new AuthResponse(user.FirstName, token));
     }
-    [HttpPost("logout")]
+    // [HttpPost("logout")]
     // public async Task<IActionResult> Logout()
     // {
-    //   await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    // await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     //   return Ok();
     // }
 
 
-    private string GenerateToken(string UserId)
-    {
-      // var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
-      var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(client_secret));
+    // private string GenerateToken(string UserId)
+    // {
+    //   var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
+    //   var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret));
 
-      var myIssuer = "http://localhost:8080";
-      var myAudience = "http://localhost:5500";
+    //   var tokenHandler = new JwtSecurityTokenHandler();
+    //   var tokenDescriptor = new SecurityTokenDescriptor
+    //   {
+    //     Subject = new ClaimsIdentity(new Claim[]
+    //     {
+    //       new Claim(ClaimTypes.NameIdentifier, UserId.ToString())
+    //     }),
+    //     Expires = DateTime.UtcNow.AddDays(7),
+    //     SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
+    //   };
 
-      var tokenHandler = new JwtSecurityTokenHandler();
-      var tokenDescriptor = new SecurityTokenDescriptor
-      {
-        Subject = new ClaimsIdentity(new Claim[]
-        {
-          new Claim(ClaimTypes.NameIdentifier, UserId.ToString()),
-          new Claim("UserRole", "Administrator")
-        }),
-        Expires = DateTime.UtcNow.AddDays(7),
-        Issuer = myIssuer,
-        Audience = myAudience,
-        SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
-      };
+    //   var token = tokenHandler.CreateToken(tokenDescriptor);
+    //   return tokenHandler.WriteToken(token);
+    // }
 
-      var token = tokenHandler.CreateToken(tokenDescriptor);
-      return tokenHandler.WriteToken(token);
-    }
+    // private bool ValidateToken(string token)
+    // {
+    //   var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
+    //   var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret));
 
-    private bool ValidateToken(string token)
-    {
-      var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
-      var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret));
 
-      var myIssuer = "http://localhost:8080";
-      var myAudience = "http://localhost:5500";
-
-      var tokenHandler = new JwtSecurityTokenHandler();
-      try
-      {
-        tokenHandler.ValidateToken(token, new TokenValidationParameters
-        {
-          ValidateIssuerSigningKey = true,
-          ValidateIssuer = true,
-          ValidateAudience = true,
-          ValidIssuer = myIssuer,
-          ValidAudience = myAudience,
-          IssuerSigningKey = mySecurityKey
-        }, out SecurityToken validatedToken);
-      }
-      catch
-      {
-        return false;
-      }
-      return true;
-    }
+    //   var tokenHandler = new JwtSecurityTokenHandler();
+    //   try
+    //   {
+    //     tokenHandler.ValidateToken(token, new TokenValidationParameters
+    //     {
+    //       ValidateIssuerSigningKey = true,
+    //       ValidateIssuer = true,
+    //       ValidateAudience = true,
+    //       ValidIssuer = myIssuer,
+    //       ValidAudience = myAudience,
+    //       IssuerSigningKey = mySecurityKey
+    //     }, out SecurityToken validatedToken);
+    //   }
+    //   catch
+    //   {
+    //     return false;
+    //   }
+    //   return true;
+    // }
 
     // private string GetClaim(string token, string ClaimType)
     // {
