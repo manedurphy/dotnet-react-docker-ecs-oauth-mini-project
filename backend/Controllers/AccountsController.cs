@@ -1,11 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
+using backend.Services;
+using backend.DTOS;
 using backend.Models;
+using backend.ResponseMessages;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -14,40 +18,43 @@ namespace backend.Controllers
   [Route("api/[controller]")]
   public class AccountsController : ControllerBase
   {
-    public List<User> Users = new List<User> {
-      new User() {Username = "test", Password = "password"},
-      new User() {Username = "test2", Password = "password2"}
-    };
-
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(User user)
+    private readonly UserService _userService;
+    private readonly IMapper _mapper;
+    public AccountsController(UserService userService, IMapper mapper)
     {
-      const string badUserNameOrPasswordMessage = "Username or password is incorrect.";
-      if (user == null)
-      {
-        return BadRequest(badUserNameOrPasswordMessage);
-      }
-
-      var lookupUser = Users.FirstOrDefault(u => u.Username == user.Username);
-
-      if (lookupUser?.Password != user.Password)
-      {
-        return BadRequest(badUserNameOrPasswordMessage);
-      }
-
-      var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-      identity.AddClaim(new Claim(ClaimTypes.Name, lookupUser.Username));
-
-      await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
-
-      return Ok(lookupUser);
+      _userService = userService;
+      _mapper = mapper;
     }
 
-    [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
+
+    [HttpGet("{id}", Name = "GetUser")]
+    public ActionResult<UserReadDto> GetUser(string id)
     {
-      await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-      return Ok();
+      var userReadDto = _mapper.Map<UserRegisterDto>(_userService.GetUserById(id));
+      return Ok(userReadDto);
     }
+
+
+    [HttpPost("register")]
+    public ActionResult<UserReadDto> Register(UserRegisterDto userSendDto)
+    {
+      var existingUser = _userService.GetUserByEmail(userSendDto.Email);
+      if (existingUser != null)
+      {
+        return BadRequest(ResponseMessages.ResponseMessage.UserResponseMessage.UserExists);
+      }
+
+      if (userSendDto.Password != userSendDto.Password2)
+      {
+        return BadRequest(ResponseMessage.UserResponseMessage.BadPassword);
+      }
+
+      var user = _mapper.Map<User>(userSendDto);
+      _userService.CreateUser(user);
+
+      var userReadDto = _mapper.Map<UserReadDto>(user);
+      return CreatedAtAction("GetUser", new { id = userReadDto.Id.ToString() }, userReadDto);
+    }
+
   }
 }

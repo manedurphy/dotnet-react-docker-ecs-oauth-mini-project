@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h2>You are now Authorized!</h2>
+    <script>
+      const token = window.location.search
+        .substring(1)
+        .split('=')[1]
+        .split('&')[0];
+      console.log(token);
+
+      fetch('https://api.github.com/user/emails', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((user) => {
+          console.log(user);
+        })
+        .catch((err) => console.log(err));
+    </script>
+  </body>
+</html>

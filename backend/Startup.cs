@@ -1,22 +1,22 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
+using AutoMapper;
+using backend.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace backend
 {
   public class Startup
   {
+    readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
@@ -26,20 +26,34 @@ namespace backend
 
     public void ConfigureServices(IServiceCollection services)
     {
-      //   services.AddAuthentication(o =>
-      //   {
-      //     o.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-      //     o.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-      //     o.DefaultChallengeScheme = "GitHub";
-      //   }).AddCookie().AddOAuth("GitHub", o =>
-      //   {
-      //     o.ClientId = Configuration["GitHub:ClientId"];
-      //     o.ClientSecret = Configuration["GitHub:ClientSecret"];
-      //   });
+      var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
+      var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret));
 
-      services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(o => o.LoginPath = new Microsoft.AspNetCore.Http.PathString("/account/login"));
+      services.AddCors(o =>
+      {
+        o.AddPolicy(name: MyAllowSpecificOrigins, builder =>
+        {
+          builder.WithOrigins("http://localhost:5500");
+        });
+      });
 
       services.AddControllers();
+      services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+      {
+        opt.Audience = "http://localhost:5500";
+        opt.Authority = "http://localhost:8080";
+        opt.RequireHttpsMetadata = false;
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+          ClockSkew = TimeSpan.FromMinutes(5),
+          IssuerSigningKey = mySecurityKey,
+          RequireSignedTokens = true,
+          RequireExpirationTime = true,
+          ValidateLifetime = true,
+        };
+      });
+      services.AddAutoMapper(typeof(Startup));
+      services.AddSingleton<UserService>();
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "backend", Version = "v1" });
@@ -58,6 +72,7 @@ namespace backend
       app.UseHttpsRedirection();
 
       app.UseRouting();
+      app.UseCors(MyAllowSpecificOrigins);
 
       app.UseAuthentication();
       app.UseAuthorization();
