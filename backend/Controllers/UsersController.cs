@@ -4,9 +4,6 @@ using backend.DTOS;
 using backend.Models;
 using backend.ResponseMessages;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System.Security.Cryptography;
-using System;
 
 namespace backend.Controllers
 {
@@ -59,7 +56,7 @@ namespace backend.Controllers
       var user = _mapper.Map<User>(userRegisterDto);
 
       user.RefreshToken = refreshToken;
-      user.Password = HashPassword(user.Password);
+      user.Password = BCrypt.Net.BCrypt.HashPassword(userRegisterDto.Password);
       _userService.Create(user);
 
       var userReadDto = _mapper.Map<UserReadDto>(user);
@@ -75,7 +72,7 @@ namespace backend.Controllers
         return NotFound(ResponseMessage.UserResponseMessage.NotFound);
       }
 
-      if (user.Password != HashPassword(userLoginDto.Password))
+      if (!BCrypt.Net.BCrypt.Verify(userLoginDto.Password, user.Password))
       {
         return BadRequest(ResponseMessage.UserResponseMessage.BadLogin);
       }
@@ -84,31 +81,5 @@ namespace backend.Controllers
 
       return Ok(new AuthResponse(user.FirstName, user.Email, token, user.RefreshToken));
     }
-
-    private string HashPassword(string password)
-    {
-      byte[] salt = new byte[128 / 8];
-      using (var rng = RandomNumberGenerator.Create())
-      {
-        rng.GetBytes(salt);
-      }
-
-      string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-        password: password,
-        salt: salt,
-        prf: KeyDerivationPrf.HMACSHA1,
-        iterationCount: 10000,
-        numBytesRequested: 256 / 8
-      ));
-
-      return hashedPassword;
-    }
-
-    // private string DecrpytPassword(string hashPassword)
-    // {
-    //   byte[] data = Convert.FromBase64String(hashPassword);
-
-    //   byte[] decrypted = ProtectedData
-    // }
   }
 }
