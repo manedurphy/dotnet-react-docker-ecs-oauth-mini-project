@@ -7,7 +7,6 @@ using backend.DTOS;
 using backend.ResponseMessages;
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
-using MongoDB.Driver;
 
 namespace backend.Controllers
 {
@@ -18,8 +17,6 @@ namespace backend.Controllers
 
     private readonly string client_id = Environment.GetEnvironmentVariable("ClientId");
     private readonly string client_secret = Environment.GetEnvironmentVariable("ClientSecret");
-    private readonly string myIssuer = "http://localhost:8080";
-    private readonly string myAudience = "http://localhost:5500";
     private readonly IUserService _userService;
     private readonly ITokenService _tokenService;
     private readonly IMapper _mapper;
@@ -36,10 +33,9 @@ namespace backend.Controllers
     {
 
       {
-
         using (HttpClient client = new HttpClient())
         {
-          Uri uri = new Uri($"https://github.com/login/oauth/access_token?client_id={client_id}&client_secret={client_secret}&code={code}&redirect_uri=http://localhost:5500/frontend/test.html");
+          Uri uri = new Uri($"https://github.com/login/oauth/access_token?client_id={client_id}&client_secret={client_secret}&code={code}");
 
           var response = await client.PostAsync(uri, null);
           var contents = await response.Content.ReadAsStreamAsync();
@@ -74,12 +70,12 @@ namespace backend.Controllers
       var user = _userService.GetUserByEmail(refreshTokenRequest.Email);
       if (user == null)
       {
-        return BadRequest("Invalid request");
+        return Unauthorized();
       }
 
       if (user.RefreshToken != refreshTokenRequest.RefreshToken)
       {
-        return BadRequest("Invalid request");
+        return Unauthorized();
       }
 
       var newToken = _tokenService.GenerateToken(user.Id);
@@ -90,68 +86,6 @@ namespace backend.Controllers
 
       return Ok(new AuthResponse(user.FirstName, user.Email, newToken, newRefreshToken));
     }
-    // [HttpPost("logout")]
-    // public async Task<IActionResult> Logout()
-    // {
-    // await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-    //   return Ok();
-    // }
-
-
-    // private string GenerateToken(string UserId)
-    // {
-    //   var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
-    //   var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret));
-
-    //   var tokenHandler = new JwtSecurityTokenHandler();
-    //   var tokenDescriptor = new SecurityTokenDescriptor
-    //   {
-    //     Subject = new ClaimsIdentity(new Claim[]
-    //     {
-    //       new Claim(ClaimTypes.NameIdentifier, UserId.ToString())
-    //     }),
-    //     Expires = DateTime.UtcNow.AddDays(7),
-    //     SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
-    //   };
-
-    //   var token = tokenHandler.CreateToken(tokenDescriptor);
-    //   return tokenHandler.WriteToken(token);
-    // }
-
-    // private bool ValidateToken(string token)
-    // {
-    //   var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
-    //   var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret));
-
-
-    //   var tokenHandler = new JwtSecurityTokenHandler();
-    //   try
-    //   {
-    //     tokenHandler.ValidateToken(token, new TokenValidationParameters
-    //     {
-    //       ValidateIssuerSigningKey = true,
-    //       ValidateIssuer = true,
-    //       ValidateAudience = true,
-    //       ValidIssuer = myIssuer,
-    //       ValidAudience = myAudience,
-    //       IssuerSigningKey = mySecurityKey
-    //     }, out SecurityToken validatedToken);
-    //   }
-    //   catch
-    //   {
-    //     return false;
-    //   }
-    //   return true;
-    // }
-
-    // private string GetClaim(string token, string ClaimType)
-    // {
-    //   var tokenHandler = new JwtSecurityTokenHandler();
-    //   var securityToken = tokenHandler.ReadJwtToken(token) as JwtSecurityToken;
-
-    //   var stringClaimValue = securityToken.Claims.First(claim => claim.Type == ClaimType).Value;
-    //   return stringClaimValue;
-    // }
 
   }
 }

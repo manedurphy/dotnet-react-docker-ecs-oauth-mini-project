@@ -11,8 +11,8 @@ namespace backend.Models
     public string Id { get; set; }
 
     [Required]
-    public string email { get; set; }
+    public string Email { get; set; }
     [Required]
-    public string platform { get; set; }
+    public string Platform { get; set; }
   }
 }

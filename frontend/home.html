@@ -18,9 +18,12 @@
         const reqToken = urlParams.get('code');
 
         axios
-          .post(`http://localhost:8080/api/auth/token?code=${reqToken}`)
+          .post(
+            `http://localhost:8080/api/Authorization/token?code=${reqToken}`
+          )
           .then(
             (res) => (window.location.href = `/frontend/test.html?${res.data}`)
+            // (res) => console.log(res)
           )
           .catch((err) => console.log(err));
       })();

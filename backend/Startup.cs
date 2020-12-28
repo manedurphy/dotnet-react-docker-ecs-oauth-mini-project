@@ -32,7 +32,7 @@ namespace backend
       {
         o.AddPolicy(name: MyAllowSpecificOrigins, builder =>
         {
-          builder.WithOrigins("http://localhost:5500");
+          builder.WithOrigins("http://localhost:5500").AllowAnyHeader().AllowAnyMethod();
         });
       });
 
@@ -59,6 +59,7 @@ namespace backend
       services.AddAutoMapper(typeof(Startup));
       services.AddSingleton<IUserService, UserService>();
       services.AddSingleton<ITokenService, TokenService>();
+      services.AddSingleton<IOAuthService, OAuthService>();
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "backend", Version = "v1" });
