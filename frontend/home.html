@@ -19,11 +19,10 @@
 
         axios
           .post(
-            `http://localhost:8080/api/Authorization/token?code=${reqToken}`
+            `http://localhost:8080/api/OAuthProfiles/get-access-token?code=${reqToken}`
           )
           .then(
             (res) => (window.location.href = `/frontend/test.html?${res.data}`)
-            // (res) => console.log(res)
           )
           .catch((err) => console.log(err));
       })();

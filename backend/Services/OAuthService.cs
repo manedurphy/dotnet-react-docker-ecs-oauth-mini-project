@@ -9,6 +9,7 @@ namespace backend.Services
     OAuthProfile CreateProfile(OAuthProfile oAuthProfile);
     OAuthProfile GetProfileById(string id);
     OAuthProfile GetProfileByEmail(string email);
+    void UpdateRefreshToken(OAuthProfile oAuthProfile);
   }
   public class OAuthService : IOAuthService
   {
@@ -34,6 +35,11 @@ namespace backend.Services
     {
       _oAuthProfiles.InsertOne(oAuthProfile);
       return oAuthProfile;
+    }
+
+    public void UpdateRefreshToken(OAuthProfile oAuthProfile)
+    {
+      _oAuthProfiles.ReplaceOne(p => p.Id == oAuthProfile.Id, oAuthProfile);
     }
   }
 }

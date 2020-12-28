@@ -11,13 +11,13 @@ namespace backend.Services
 {
   public interface IUserService
   {
-    List<User> GetUsers();
+    // List<User> GetUsers();
     User GetUserById(string id);
     User GetUserByEmail(string email);
     User CreateUser(User user);
     void UpdateRefreshToken(User user);
   }
-  public class UserService : IUserService
+  public class UserService : AuthorzationService<User>
   {
 
     private readonly IMongoCollection<User> _users;
@@ -28,11 +28,6 @@ namespace backend.Services
       var database = client.GetDatabase(Environment.GetEnvironmentVariable("MONGO_DATABASE"));
 
       _users = database.GetCollection<User>("Users");
-    }
-
-    public List<User> GetUsers()
-    {
-      return _users.Find(user => true).ToList();
     }
 
     [ActionName(nameof(GetUserById))]

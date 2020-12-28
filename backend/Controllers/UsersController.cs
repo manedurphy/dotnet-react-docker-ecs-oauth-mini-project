@@ -53,5 +53,24 @@ namespace backend.Controllers
       var userReadDto = _mapper.Map<UserReadDto>(user);
       return CreatedAtAction("GetUser", new { id = userReadDto.Id.ToString() }, userReadDto);
     }
+
+    [HttpPost("login")]
+    public ActionResult<string> Login(UserLoginDto userLoginDto)
+    {
+      var user = _userService.GetUserByEmail(userLoginDto.Email);
+      if (user == null)
+      {
+        return NotFound(ResponseMessage.UserResponseMessage.NotFound);
+      }
+
+      if (user.Password != userLoginDto.Password)
+      {
+        return BadRequest(ResponseMessage.UserResponseMessage.BadLogin);
+      }
+
+      var token = _tokenService.GenerateToken(user.Id);
+
+      return Ok(new AuthResponse(user.FirstName, user.Email, token, user.RefreshToken));
+    }
   }
 }

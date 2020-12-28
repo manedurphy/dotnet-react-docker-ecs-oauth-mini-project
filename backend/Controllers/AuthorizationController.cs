@@ -1,10 +1,6 @@
 using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 using AutoMapper;
 using backend.Services;
-using backend.DTOS;
-using backend.ResponseMessages;
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 
@@ -19,72 +15,57 @@ namespace backend.Controllers
     private readonly string client_secret = Environment.GetEnvironmentVariable("ClientSecret");
     private readonly IUserService _userService;
     private readonly ITokenService _tokenService;
+    private readonly IOAuthService _oAuthService;
     private readonly IMapper _mapper;
 
-    public AuthorizationController(IUserService userService, ITokenService tokenService, IMapper mapper)
+    public AuthorizationController(IUserService userService, ITokenService tokenService, IOAuthService oAuthService, IMapper mapper)
     {
       _userService = userService;
       _tokenService = tokenService;
       _mapper = mapper;
+      _oAuthService = oAuthService;
     }
 
-    [HttpPost("token")]
-    public async Task<System.IO.Stream> HandleToken(string code)
-    {
 
-      {
-        using (HttpClient client = new HttpClient())
-        {
-          Uri uri = new Uri($"https://github.com/login/oauth/access_token?client_id={client_id}&client_secret={client_secret}&code={code}");
-
-          var response = await client.PostAsync(uri, null);
-          var contents = await response.Content.ReadAsStreamAsync();
-          return contents;
-        }
-      }
-
-    }
-
-    [HttpPost("login")]
-    public ActionResult<string> Login(UserSendDto userSendDto)
-    {
-      var user = _userService.GetUserByEmail(userSendDto.Email);
-      if (user == null)
-      {
-        return NotFound(ResponseMessage.UserResponseMessage.NotFound);
-      }
-
-      if (user.Password != userSendDto.Password)
-      {
-        return BadRequest(ResponseMessage.UserResponseMessage.BadLogin);
-      }
-
-      var token = _tokenService.GenerateToken(user.Id);
-
-      return Ok(new AuthResponse(user.FirstName, user.Email, token, user.RefreshToken));
-    }
 
     [HttpPost("refresh")]
-    public ActionResult<AuthResponse> GetNewToken(RefreshTokenRequest refreshTokenRequest)
+    public ActionResult GetNewToken(RefreshTokenRequest refreshTokenRequest)
     {
       var user = _userService.GetUserByEmail(refreshTokenRequest.Email);
-      if (user == null)
+      if (user != null)
       {
-        return Unauthorized();
+        if (user.RefreshToken != refreshTokenRequest.RefreshToken)
+        {
+          return Unauthorized();
+        }
+
+        var newToken = _tokenService.GenerateToken(user.Id);
+        var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+        user.RefreshToken = newRefreshToken;
+        _userService.UpdateRefreshToken(user);
+
+        return Ok(new AuthResponse(user.FirstName, user.Email, newToken, newRefreshToken));
       }
 
-      if (user.RefreshToken != refreshTokenRequest.RefreshToken)
+      var profile = _oAuthService.GetProfileByEmail(refreshTokenRequest.Email);
+      if (profile != null)
       {
-        return Unauthorized();
+        if (profile.RefreshToken != refreshTokenRequest.RefreshToken)
+        {
+          return Unauthorized();
+        }
+
+        var newToken = _tokenService.GenerateToken(profile.Id);
+        var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+        profile.RefreshToken = newRefreshToken;
+        _oAuthService.UpdateRefreshToken(profile);
+
+        return Ok(new { token = newToken, refreshToken = newRefreshToken });
       }
 
-      var newToken = _tokenService.GenerateToken(user.Id);
-      var newRefreshToken = _tokenService.GenerateRefreshToken();
-
-      user.RefreshToken = newRefreshToken;
-      _userService.UpdateRefreshToken(user);
-
-      return Ok(new AuthResponse(user.FirstName, user.Email, newToken, newRefreshToken));
+      return BadRequest();
     }
 
   }
