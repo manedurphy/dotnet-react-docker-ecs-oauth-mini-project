@@ -13,12 +13,12 @@ namespace backend.Controllers
 
     private readonly string client_id = Environment.GetEnvironmentVariable("ClientId");
     private readonly string client_secret = Environment.GetEnvironmentVariable("ClientSecret");
-    private readonly IUserService _userService;
+    private readonly IAuthorizationService<User> _userService;
     private readonly ITokenService _tokenService;
-    private readonly IOAuthService _oAuthService;
+    private readonly IAuthorizationService<OAuthProfile> _oAuthService;
     private readonly IMapper _mapper;
 
-    public AuthorizationController(IUserService userService, ITokenService tokenService, IOAuthService oAuthService, IMapper mapper)
+    public AuthorizationController(IAuthorizationService<User> userService, ITokenService tokenService, IAuthorizationService<OAuthProfile> oAuthService, IMapper mapper)
     {
       _userService = userService;
       _tokenService = tokenService;
@@ -31,7 +31,7 @@ namespace backend.Controllers
     [HttpPost("refresh")]
     public ActionResult GetNewToken(RefreshTokenRequest refreshTokenRequest)
     {
-      var user = _userService.GetUserByEmail(refreshTokenRequest.Email);
+      var user = _userService.GetByEmail(refreshTokenRequest.Email);
       if (user != null)
       {
         if (user.RefreshToken != refreshTokenRequest.RefreshToken)
@@ -43,12 +43,12 @@ namespace backend.Controllers
         var newRefreshToken = _tokenService.GenerateRefreshToken();
 
         user.RefreshToken = newRefreshToken;
-        _userService.UpdateRefreshToken(user);
+        _userService.Update(user);
 
         return Ok(new AuthResponse(user.FirstName, user.Email, newToken, newRefreshToken));
       }
 
-      var profile = _oAuthService.GetProfileByEmail(refreshTokenRequest.Email);
+      var profile = _oAuthService.GetByEmail(refreshTokenRequest.Email);
       if (profile != null)
       {
         if (profile.RefreshToken != refreshTokenRequest.RefreshToken)
@@ -60,7 +60,7 @@ namespace backend.Controllers
         var newRefreshToken = _tokenService.GenerateRefreshToken();
 
         profile.RefreshToken = newRefreshToken;
-        _oAuthService.UpdateRefreshToken(profile);
+        _oAuthService.Update(profile);
 
         return Ok(new { token = newToken, refreshToken = newRefreshToken });
       }

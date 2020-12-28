@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using AutoMapper;
+using backend.Models;
 using backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -57,9 +58,9 @@ namespace backend
 
       });
       services.AddAutoMapper(typeof(Startup));
-      services.AddSingleton<IUserService, UserService>();
+      services.AddSingleton<IAuthorizationService<User>, UserService>();
       services.AddSingleton<ITokenService, TokenService>();
-      services.AddSingleton<IOAuthService, OAuthService>();
+      services.AddSingleton<IAuthorizationService<OAuthProfile>, OAuthService>();
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "backend", Version = "v1" });

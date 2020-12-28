@@ -4,14 +4,7 @@ using System;
 
 namespace backend.Services
 {
-  public interface IOAuthService
-  {
-    OAuthProfile CreateProfile(OAuthProfile oAuthProfile);
-    OAuthProfile GetProfileById(string id);
-    OAuthProfile GetProfileByEmail(string email);
-    void UpdateRefreshToken(OAuthProfile oAuthProfile);
-  }
-  public class OAuthService : IOAuthService
+  public class OAuthService : IAuthorizationService<OAuthProfile>
   {
     private readonly IMongoCollection<OAuthProfile> _oAuthProfiles;
     public OAuthService()
@@ -21,23 +14,23 @@ namespace backend.Services
 
       _oAuthProfiles = database.GetCollection<OAuthProfile>("OAuthProfiles");
     }
-    public OAuthProfile GetProfileById(string id)
+    public OAuthProfile GetById(string id)
     {
       return _oAuthProfiles.Find(p => p.Id == id).FirstOrDefault();
     }
 
-    public OAuthProfile GetProfileByEmail(string email)
+    public OAuthProfile GetByEmail(string email)
     {
       return _oAuthProfiles.Find<OAuthProfile>(p => p.Email == email).FirstOrDefault();
     }
 
-    public OAuthProfile CreateProfile(OAuthProfile oAuthProfile)
+    public OAuthProfile Create(OAuthProfile oAuthProfile)
     {
       _oAuthProfiles.InsertOne(oAuthProfile);
       return oAuthProfile;
     }
 
-    public void UpdateRefreshToken(OAuthProfile oAuthProfile)
+    public void Update(OAuthProfile oAuthProfile)
     {
       _oAuthProfiles.ReplaceOne(p => p.Id == oAuthProfile.Id, oAuthProfile);
     }

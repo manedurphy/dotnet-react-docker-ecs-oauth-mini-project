@@ -1,23 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using backend.DTOS;
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace backend.Services
 {
-  public interface IUserService
-  {
-    // List<User> GetUsers();
-    User GetUserById(string id);
-    User GetUserByEmail(string email);
-    User CreateUser(User user);
-    void UpdateRefreshToken(User user);
-  }
-  public class UserService : AuthorzationService<User>
+  public class UserService : IAuthorizationService<User>
   {
 
     private readonly IMongoCollection<User> _users;
@@ -30,24 +18,24 @@ namespace backend.Services
       _users = database.GetCollection<User>("Users");
     }
 
-    [ActionName(nameof(GetUserById))]
-    public User GetUserById(string id)
+    [ActionName("GetUserById")]
+    public User GetById(string id)
     {
       return _users.Find<User>(user => user.Id == id).FirstOrDefault();
     }
 
-    public User GetUserByEmail(string email)
+    public User GetByEmail(string email)
     {
       return _users.Find<User>(user => user.Email == email).FirstOrDefault();
     }
 
-    public User CreateUser(User user)
+    public User Create(User user)
     {
       _users.InsertOne(user);
       return user;
     }
 
-    public void UpdateRefreshToken(User user)
+    public void Update(User user)
     {
       _users.ReplaceOne(u => u.Id == user.Id, user);
     }

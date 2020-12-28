@@ -25,12 +25,12 @@
       })
         .then((res) => res.json())
         .then((user) => {
-          console.log(user);
           return axios.post(
             'http://localhost:8080/api/OAuthProfiles/authorize',
             {
               email: user[0].email,
               platform: 'GitHub',
+              accessToken: token,
             },
             {
               headers: {
@@ -39,8 +39,12 @@
             }
           );
         })
-        .then((res) => console.log(res))
-        .catch((err) => console.log('Something went wrong'));
+        .then((res) => {
+          console.log('RES: ', res);
+          localStorage.setItem('token', res.data.token);
+          localStorage.setItem('refreshToken', res.data.refreshToken);
+        })
+        .catch((err) => console.log(err));
     </script>
   </body>
 </html>
