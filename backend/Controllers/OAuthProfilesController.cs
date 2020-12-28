@@ -1,4 +1,3 @@
-using System;
 using AutoMapper;
 using backend.DTOS;
 using backend.Models;
@@ -35,6 +34,7 @@ namespace backend.Controllers
       if (profile == null)
       {
         var newProfile = _mapper.Map<OAuthProfile>(oAuthProfileSendDto);
+        newProfile.RefreshToken = _tokenService.GenerateRefreshToken();
         profile = _oAuthService.CreateProfile(newProfile);
       }
 
