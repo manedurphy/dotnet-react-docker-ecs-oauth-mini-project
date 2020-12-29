@@ -28,6 +28,7 @@ module.exports = {
     compress: true,
     host: '0.0.0.0',
     port: 3000,
+    historyApiFallback: true,
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
@@ -35,6 +36,7 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
   },
   plugins: [
     new HtmlWebpackPlugin({

@@ -44,7 +44,7 @@ namespace backend.Controllers
       var existingProfile = _oAuthService.GetByEmail(userRegisterDto.Email);
       if (existingProfile != null)
       {
-        return BadRequest();
+        return BadRequest(ResponseMessage.OAuthResonseMessage.ProfileExists);
       }
 
       if (userRegisterDto.Password != userRegisterDto.Password2)
