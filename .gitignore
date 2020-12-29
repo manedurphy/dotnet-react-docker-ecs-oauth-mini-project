@@ -443,3 +443,6 @@ $RECYCLE.BIN/
 
 # Environment
 .env
+
+#React
+dist/
