@@ -18,7 +18,7 @@ interface FormRegisterData extends FormLoginData {
   password2: string;
 }
 
-const LocalRegisterForm = () => {
+const LocalRegisterForm: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormRegisterData>({

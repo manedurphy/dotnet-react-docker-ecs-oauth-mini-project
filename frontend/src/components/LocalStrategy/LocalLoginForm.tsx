@@ -17,7 +17,7 @@ export interface FormLoginData {
   password: string;
 }
 
-const LocalLoginForm = () => {
+const LocalLoginForm: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState<FormLoginData>({
     email: '',

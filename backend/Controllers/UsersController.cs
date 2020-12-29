@@ -4,6 +4,10 @@ using backend.DTOS;
 using backend.Models;
 using backend.ResponseMessages;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System;
+using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace backend.Controllers
 {
@@ -66,7 +70,7 @@ namespace backend.Controllers
     [HttpPost("login")]
     public ActionResult<string> Login(UserLoginDto userLoginDto)
     {
-      var user = _userService.GetByEmail(userLoginDto.Email);
+      User user = _userService.GetByEmail(userLoginDto.Email);
       if (user == null)
       {
         return NotFound(ResponseMessage.UserResponseMessage.NotFound);
@@ -77,9 +81,30 @@ namespace backend.Controllers
         return BadRequest(ResponseMessage.UserResponseMessage.BadLogin);
       }
 
-      var token = _tokenService.GenerateToken(user.Id);
+      string token = _tokenService.GenerateToken(user.Id);
 
       return Ok(new AuthResponse(user.FirstName, user.Email, token, user.RefreshToken));
+    }
+
+    [HttpGet("info")]
+    [Authorize]
+    public ActionResult GetUserInfo()
+    {
+      string header = Request.Headers["Authorization"];
+      string[] splitHeader = header.Split(' ');
+      string token = splitHeader[1];
+
+      JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+      JwtSecurityToken readToken = handler.ReadToken(token) as JwtSecurityToken;
+      string Id = readToken.Claims.First(claim => claim.Type == "nameid").Value;
+
+      User user = _userService.GetById(Id);
+      if (user != null)
+      {
+        return Ok(new LoggedInResponse(user.FirstName, user.Email));
+      }
+
+      return BadRequest();
     }
   }
 }

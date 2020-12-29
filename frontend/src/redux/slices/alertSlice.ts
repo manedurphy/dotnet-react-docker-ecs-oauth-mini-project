@@ -1,23 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface Alert {
+export interface AlertState {
   message: string;
   statusCode: number;
 }
 
 interface AlertAction {
   type: string;
-  payload: Alert;
+  payload: AlertState;
 }
 
 const alertSlice = createSlice({
   name: 'alerts',
   initialState: [],
   reducers: {
-    add: (state: Alert[], action: AlertAction) => {
+    add: (state: AlertState[], action: AlertAction) => {
       state.push(action.payload);
     },
-    remove: (state: Alert[]) => {
+    remove: (state: AlertState[]) => {
       state.shift();
     },
   },
