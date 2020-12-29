@@ -39,5 +39,10 @@ namespace backend.Services
     {
       _users.ReplaceOne(u => u.Id == user.Id, user);
     }
+
+    public User GetByRefreshToken(string refreshToken)
+    {
+      return _users.Find<User>(user => user.RefreshToken == refreshToken).FirstOrDefault();
+    }
   }
 }

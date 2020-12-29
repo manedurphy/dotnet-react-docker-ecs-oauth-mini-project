@@ -1,4 +1,4 @@
-export const handleTokens = (token: string, refreshToken: string) => {
+export const handleSetTokens = (token: string, refreshToken: string) => {
   localStorage.setItem('token', token);
   localStorage.setItem('refreshToken', refreshToken);
 };

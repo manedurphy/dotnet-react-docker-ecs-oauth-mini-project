@@ -1,3 +1,13 @@
+import { AlertState } from '../redux/slices/alertSlice';
+import { ProtectedDataState } from '../redux/slices/protectedData';
+import { UserState } from '../redux/slices/userSlice';
+
+export interface GlobalState {
+  alerts: AlertState[];
+  user: UserState;
+  proctedData: ProtectedDataState[];
+}
+
 export interface WeatherData {
   date: Date;
   temperatureC: number;

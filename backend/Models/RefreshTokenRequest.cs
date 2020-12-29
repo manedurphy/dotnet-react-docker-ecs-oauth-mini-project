@@ -6,7 +6,5 @@ namespace backend.Models
   {
     [Required]
     public string RefreshToken { get; set; }
-    [Required]
-    public string Email { get; set; }
   }
 }

@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios';
 import { useDispatch } from 'react-redux';
 import { add, remove } from '../../redux/slices/alertSlice';
 import { setUser } from '../../redux/slices/userSlice';
-import { handleTokens } from './helpers';
+import { handleSetTokens } from './helpers';
 
 interface LoginResponse {
   name: string;
@@ -42,7 +42,7 @@ const LocalLoginForm: React.FC = (): JSX.Element => {
       );
 
       dispatch(setUser({ name: res.data.name, email: res.data.email }));
-      handleTokens(res.data.token, res.data.refreshToken);
+      handleSetTokens(res.data.token, res.data.refreshToken);
     } catch (err) {
       dispatch(
         add({ message: err.response.data, statusCode: err.response.status })

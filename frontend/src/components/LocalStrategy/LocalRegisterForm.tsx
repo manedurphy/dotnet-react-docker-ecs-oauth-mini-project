@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { add, remove } from '../../redux/slices/alertSlice';
 import { FormLoginData } from './LocalLoginForm';
 import { Redirect } from 'react-router-dom';
-
-interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-}
 
 interface FormRegisterData extends FormLoginData {
   firstName: string;
@@ -36,15 +29,13 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const res: AxiosResponse<User> = await axios.post(
-        'http://localhost:8080/api/Users/register',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      await axios.post('http://localhost:8080/api/Users/register', formData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      setIsRegistered(true);
     } catch (err) {
       dispatch(
         add({ message: err.response.data, statusCode: err.response.status })

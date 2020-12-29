@@ -30,7 +30,7 @@ namespace backend.Controllers
     [HttpPost("refresh")]
     public ActionResult GetNewToken(RefreshTokenRequest refreshTokenRequest)
     {
-      var user = _userService.GetByEmail(refreshTokenRequest.Email);
+      var user = _userService.GetByRefreshToken(refreshTokenRequest.RefreshToken);
       if (user != null)
       {
         if (user.RefreshToken != refreshTokenRequest.RefreshToken)
@@ -47,7 +47,7 @@ namespace backend.Controllers
         return Ok(new AuthResponse(user.FirstName, user.Email, newToken, newRefreshToken));
       }
 
-      var profile = _oAuthService.GetByEmail(refreshTokenRequest.Email);
+      var profile = _oAuthService.GetByRefreshToken(refreshTokenRequest.RefreshToken);
       if (profile != null)
       {
         if (profile.RefreshToken != refreshTokenRequest.RefreshToken)

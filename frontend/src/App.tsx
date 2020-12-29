@@ -3,26 +3,15 @@ import Navbar from './components/UI/Navbar';
 import LocalRegisterForm from './components/LocalStrategy/LocalRegisterForm';
 import LocalLoginForm from './components/LocalStrategy/LocalLoginForm';
 import { Route } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { add, AlertState, remove } from './redux/slices/alertSlice';
-import { ProtectedDataState, setData } from './redux/slices/protectedData';
-import { setUser, UserState } from './redux/slices/userSlice';
-import {
-  getNewToken,
-  getUserData,
-  getWeatherData,
-  setToken,
-} from './Requests/axios';
-
-interface GlobalState {
-  alerts: AlertState[];
-  user: UserState;
-  proctedData: ProtectedDataState[];
-}
+import { useDispatch } from 'react-redux';
+import { add, remove } from './redux/slices/alertSlice';
+import { setData } from './redux/slices/protectedData';
+import { setUser } from './redux/slices/userSlice';
+import { getNewToken, getUserData, getWeatherData } from './Requests/axios';
+import { handleSetTokens } from './components/LocalStrategy/helpers';
 
 const App: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
-  const userEmail = useSelector((state: GlobalState) => state.user).email;
 
   useEffect(() => {
     (async () => {
@@ -34,8 +23,15 @@ const App: React.FC = (): JSX.Element => {
         dispatch(setData(weatherData));
       } catch (err) {
         try {
-          const newToken = await getNewToken(userEmail);
-          setToken(newToken);
+          const refreshResponse = await getNewToken();
+          handleSetTokens(refreshResponse.token, refreshResponse.refreshToken);
+
+          dispatch(
+            setUser({
+              name: refreshResponse.name,
+              email: refreshResponse.email,
+            })
+          );
         } catch (err) {
           dispatch(
             add({
