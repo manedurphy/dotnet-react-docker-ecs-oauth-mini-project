@@ -18,5 +18,20 @@ namespace backend.Models
     public string Platform { get; set; }
     [Required]
     public string RefreshToken { get; set; }
+    [Required]
+    public string Picture { get; set; }
+
+    public OAuthProfile(string username, string email, string platform, string refreshToken, string picture)
+    {
+      UserName = username;
+      Email = email;
+      Platform = platform;
+      RefreshToken = refreshToken;
+      Picture = picture;
+    }
+
+    public OAuthProfile()
+    {
+    }
   }
 }

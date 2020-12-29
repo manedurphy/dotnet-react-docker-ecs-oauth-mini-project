@@ -57,6 +57,7 @@ namespace backend
         };
 
       });
+
       services.AddAutoMapper(typeof(Startup));
       services.AddSingleton<IAuthorizationService<User>, UserService>();
       services.AddSingleton<ITokenService, TokenService>();

@@ -10,7 +10,6 @@ namespace backend.Controllers
   [Route("api/[controller]")]
   public class AuthorizationController : ControllerBase
   {
-
     private readonly string client_id = Environment.GetEnvironmentVariable("ClientId");
     private readonly string client_secret = Environment.GetEnvironmentVariable("ClientSecret");
     private readonly IAuthorizationService<User> _userService;
