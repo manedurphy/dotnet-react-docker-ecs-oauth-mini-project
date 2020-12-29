@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import Navbar from './components/UI/Navbar';
-import LocalForm from './components/LocalStrategy/LocalRegisterForm';
+import LocalRegisterForm from './components/LocalStrategy/LocalRegisterForm';
+import LocalLoginForm from './components/LocalStrategy/LocalLoginForm';
 import { Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { add, remove } from './redux/slices/alertSlice';
@@ -37,7 +38,8 @@ const App: React.FC = (): JSX.Element => {
   return (
     <React.Fragment>
       <Navbar />
-      <Route exact path={'/register'} component={LocalForm} />
+      <Route exact path={'/register'} component={LocalRegisterForm} />
+      <Route exact path={'/login'} component={LocalLoginForm} />
     </React.Fragment>
   );
 };

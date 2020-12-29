@@ -2,31 +2,26 @@ import React, { useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { useDispatch } from 'react-redux';
 import { add, remove } from '../../redux/slices/alertSlice';
-import { FormLoginData } from './LocalLoginForm';
-import { Redirect } from 'react-router-dom';
+import { setUser } from '../../redux/slices/userSlice';
+import { handleTokens } from './helpers';
 
-interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
+interface LoginResponse {
+  name: string;
   email: string;
+  token: string;
+  refreshToken: string;
 }
 
-interface FormRegisterData extends FormLoginData {
-  firstName: string;
-  lastName: string;
-  password2: string;
+export interface FormLoginData {
+  email: string;
+  password: string;
 }
 
-const LocalRegisterForm = () => {
+const LocalLoginForm = () => {
   const dispatch = useDispatch();
-  const [isRegistered, setIsRegistered] = useState<boolean>(false);
-  const [formData, setFormData] = useState<FormRegisterData>({
-    firstName: '',
-    lastName: '',
+  const [formData, setFormData] = useState<FormLoginData>({
     email: '',
     password: '',
-    password2: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,8 +31,8 @@ const LocalRegisterForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const res: AxiosResponse<User> = await axios.post(
-        'http://localhost:8080/api/Users/register',
+      const res: AxiosResponse<LoginResponse> = await axios.post(
+        'http://localhost:8080/api/Users/login',
         formData,
         {
           headers: {
@@ -45,6 +40,9 @@ const LocalRegisterForm = () => {
           },
         }
       );
+
+      dispatch(setUser({ name: res.data.name, email: res.data.email }));
+      handleTokens(res.data.token, res.data.refreshToken);
     } catch (err) {
       dispatch(
         add({ message: err.response.data, statusCode: err.response.status })
@@ -57,20 +55,6 @@ const LocalRegisterForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="firstName">First Name</label>
-      <input
-        type="text"
-        name="firstName"
-        id="firstName"
-        onChange={handleChange}
-      />
-      <label htmlFor="lastName">Last Name</label>
-      <input
-        type="text"
-        name="lastName"
-        id="lastName"
-        onChange={handleChange}
-      />
       <label htmlFor="email">Email</label>
       <input type="text" name="email" id="email" onChange={handleChange} />
       <label htmlFor="password">Password</label>
@@ -80,17 +64,9 @@ const LocalRegisterForm = () => {
         id="password"
         onChange={handleChange}
       />
-      <label htmlFor="password2">Password2</label>
-      <input
-        type="text"
-        name="password2"
-        id="password2"
-        onChange={handleChange}
-      />
       <button type="submit">Submit</button>
-      {isRegistered && <Redirect to={'/login'} />}
     </form>
   );
 };
 
-export default LocalRegisterForm;
+export default LocalLoginForm;
