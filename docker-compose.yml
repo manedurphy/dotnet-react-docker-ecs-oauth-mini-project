@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./backend
+    ports:
+      - '8080:80'
+    env_file:
+      - ./backend/.env
+
+  react:
+    build: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/src/:/app/src
+      - /app/node_modules
+    depends_on:
+      - api
