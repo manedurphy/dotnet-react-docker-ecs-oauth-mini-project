@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { setStatus } from '../redux/slices/OAuthSlice';
 import { getWeatherData } from '../redux/slices/protectedData';
 import { GlobalState } from '../Requests/interfaces';
 
@@ -12,6 +13,7 @@ const Home = () => {
 
   useEffect((): void => {
     dispatch(getWeatherData());
+    dispatch(setStatus(false));
   }, []);
   return (
     <div>

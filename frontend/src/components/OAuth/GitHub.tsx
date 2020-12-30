@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { getAccessToken } from '../../Requests/axios';
 import { getUserData, UserState } from '../../redux/slices/userSlice';
-import styled from 'styled-components';
 import { setStatus } from '../../redux/slices/OAuthSlice';
 
 interface OAuthProps {
@@ -21,37 +20,32 @@ const GitHub: React.FC<OAuthProps> = (props): JSX.Element => {
       getAccessToken(code)
         .then(() => {
           dispatch(getUserData());
-          dispatch(setStatus(false));
         })
         .catch((err) => console.log('ERROR IN GITHUB: ', err.response));
     }
   }, []);
 
+  const test = () => {
+    console.log('test');
+  };
+
   return (
-    <Box>
+    <div className={'box'}>
       <h2>
         Login With GitHub{' '}
         <span>
           <i className="fab fa-github"></i>
         </span>
       </h2>
-      <Link href="https://github.com/login/oauth/authorize?client_id=dc66fcdec00e52ce44b8&scope=user&redirect_uri=http://localhost:3000/oauth">
+      <a
+        className={'link'}
+        href="https://github.com/login/oauth/authorize?client_id=dc66fcdec00e52ce44b8&scope=user&redirect_uri=http://localhost:3000/oauth"
+      >
         Click here
-      </Link>
-    </Box>
+      </a>
+      <input type="text" onChange={test} />
+    </div>
   );
 };
-
-const Box = styled.div`
-  border: 3px solid black;
-  width: 285px;
-  text-align: center;
-`;
-
-const Link = styled.a`
-  color: black;
-  text-decoration: none;
-  font-size: 1rem;
-`;
 
 export default GitHub;
