@@ -1,7 +1,6 @@
-import { Action, createSlice, Dispatch, ThunkDispatch } from '@reduxjs/toolkit';
+import { Action, createSlice, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootStateOrAny } from 'react-redux';
 import { requestWeatherData } from '../../Requests/axios';
-import { setAlert } from './alertSlice';
 
 export interface ProtectedDataState {
   date: string;
@@ -29,17 +28,8 @@ export const { setData } = protectedDataSlice.actions;
 export const getWeatherData = () => async (
   dispatch: ThunkDispatch<void, RootStateOrAny, Action<string>>
 ) => {
-  try {
-    const weatherData = await requestWeatherData();
-    dispatch(setData(weatherData));
-  } catch (err) {
-    // dispatch(
-    //   setAlert({
-    //     message: err.response.statusText,
-    //     statusCode: err.response.status,
-    //   })
-    // );
-  }
+  const weatherData = await requestWeatherData();
+  dispatch(setData(weatherData));
 };
 
 export default protectedDataSlice.reducer;

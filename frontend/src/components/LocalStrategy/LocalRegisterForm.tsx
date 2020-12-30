@@ -4,8 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAlert } from '../../redux/slices/alertSlice';
 import { FormLoginData } from './LocalLoginForm';
 import { Redirect } from 'react-router-dom';
-import styled from 'styled-components';
+
 import { GlobalState } from '../../Requests/interfaces';
+import {
+  Alert,
+  ButtonGroup,
+  Form,
+  FormContainer,
+  FormGroup,
+  Input,
+  Link,
+} from './styled-components';
 
 interface FormRegisterData extends FormLoginData {
   firstName: string;
@@ -15,7 +24,8 @@ interface FormRegisterData extends FormLoginData {
 
 const LocalRegisterForm: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
-  const alerts = useSelector((state: GlobalState) => state.alerts);
+  const state = useSelector((state: GlobalState) => state);
+  const { alerts, user } = state;
 
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormRegisterData>({
@@ -96,55 +106,14 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
         <ButtonGroup>
           <button type="submit">Sign Up</button>
           <div>
-            Have an account? Sign in <Link href={'/login'}>here</Link>
+            Have an account? Sign in <Link href="/login">here</Link>
           </div>
         </ButtonGroup>
         {isRegistered && <Redirect to={'/login'} />}
+        {user.isAuthorized && !user.loading && <Redirect to={'/'} />}
       </Form>
     </FormContainer>
   );
 };
-
-const FormContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 15px;
-`;
-
-const Form = styled.form`
-  width: 20%;
-`;
-
-const FormGroup = styled.div`
-  margin: 1rem 0;
-  width: 100%;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  height: 20px;
-`;
-
-const Alert = styled.div`
-  width: 102%;
-  height: 30px;
-  background-color: #ff5b1e;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-`;
-
-const Link = styled.a`
-  text-decoration: none;
-  color: blue;
-  font-size: 1rem;
-`;
 
 export default LocalRegisterForm;

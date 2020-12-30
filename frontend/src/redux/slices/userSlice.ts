@@ -2,12 +2,13 @@ import { Action, createSlice, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootStateOrAny } from 'react-redux';
 import { handleSetTokens } from '../../components/LocalStrategy/helpers';
 import { requestNewTokens, requestUserData } from '../../Requests/axios';
-import { setAlert } from './alertSlice';
 import { getWeatherData } from './protectedData';
 
 export interface UserState {
   name: string;
   email: string;
+  isAuthorized: boolean;
+  loading: boolean;
 }
 
 interface SetUserAction {
@@ -20,6 +21,8 @@ const userSlice = createSlice({
   initialState: {
     name: '',
     email: '',
+    isAuthorized: true,
+    loading: true,
   },
   reducers: {
     setUser: (state: UserState, action: SetUserAction) => action.payload,
@@ -33,7 +36,7 @@ export const getUserData = () => async (
 ) => {
   try {
     const userData = await requestUserData();
-    dispatch(setUser(userData));
+    dispatch(setUser({ ...userData, isAuthorized: true, loading: false }));
   } catch (err) {
     dispatch(getNewTokens());
   }
@@ -52,15 +55,19 @@ export const getNewTokens = () => async (
       setUser({
         name: refreshResponse.name,
         email: refreshResponse.email,
+        isAuthorized: true,
+        loading: false,
       })
     );
   } catch (err) {
-    // dispatch(
-    //   setAlert({
-    //     message: err.response.statusText,
-    //     statusCode: err.response.status,
-    //   })
-    // );
+    dispatch(
+      setUser({
+        name: '',
+        email: '',
+        isAuthorized: false,
+        loading: false,
+      })
+    );
   }
 };
 
