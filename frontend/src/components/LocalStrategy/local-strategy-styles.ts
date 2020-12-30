@@ -40,4 +40,5 @@ export const Link = styled.a`
   text-decoration: none;
   color: blue;
   font-size: 1rem;
+  cursor: pointer;
 `;

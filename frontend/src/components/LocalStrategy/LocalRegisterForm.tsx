@@ -6,6 +6,7 @@ import { FormLoginData } from './LocalLoginForm';
 import { Redirect } from 'react-router-dom';
 import { GlobalState } from '../../Requests/interfaces';
 import {
+  Alert,
   ButtonGroup,
   Form,
   FormContainer,
@@ -62,7 +63,7 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
     <FormContainer>
       <Form className={'form'} onSubmit={handleSubmit}>
         {alerts.length ? (
-          <div className={'alert'}>{alerts[0].message}</div>
+          <Alert className={'alert'}>{alerts[0].message}</Alert>
         ) : null}
         <FormGroup>
           <label htmlFor="firstName">First Name</label>

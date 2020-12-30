@@ -41,7 +41,7 @@ const GitHub: React.FC<OAuthProps> = (props): JSX.Element => {
   );
 };
 
-const Box = styled.div`
+export const Box = styled.div`
   border: 3px solid black;
   width: 285px;
   text-align: center;

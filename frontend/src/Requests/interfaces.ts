@@ -5,7 +5,7 @@ import { Alert } from '../redux/slices/alertSlice';
 export interface GlobalState {
   alerts: Alert[];
   user: UserState;
-  proctedData: ProtectedDataState[];
+  protectedData: ProtectedDataState[];
   OAuth: boolean;
 }
 
