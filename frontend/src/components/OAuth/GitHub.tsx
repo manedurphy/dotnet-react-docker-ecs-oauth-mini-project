@@ -1,31 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { getAccessToken } from '../../Requests/axios';
-import { getUserData } from '../../redux/slices/userSlice';
+import { getUserData, UserState } from '../../redux/slices/userSlice';
 import styled from 'styled-components';
-import Spinner from '../UI/Spinner';
+import { setStatus } from '../../redux/slices/OAuthSlice';
 
-const GitHub = () => {
+interface OAuthProps {
+  user: UserState;
+}
+
+const GitHub: React.FC<OAuthProps> = (props): JSX.Element => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
 
   useEffect((): void => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
 
     if (code) {
-      setLoading(true);
+      dispatch(setStatus(true));
       getAccessToken(code)
         .then(() => {
           dispatch(getUserData());
+          dispatch(setStatus(false));
         })
         .catch((err) => console.log('ERROR IN GITHUB: ', err.response));
     }
   }, []);
 
-  return loading ? (
-    <Spinner />
-  ) : (
+  return (
     <Box>
       <h2>
         Login With GitHub{' '}

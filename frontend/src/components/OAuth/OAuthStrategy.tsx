@@ -3,13 +3,18 @@ import GitHub from './GitHub';
 import { Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '../../Requests/interfaces';
+import Spinner from '../UI/Spinner';
 import styled from 'styled-components';
 
 const OAuth = () => {
-  const user = useSelector((state: GlobalState) => state.user);
-  return (
+  const state = useSelector((state: GlobalState) => state);
+  const { user, OAuth } = state;
+
+  return OAuth ? (
+    <Spinner />
+  ) : (
     <Container>
-      <GitHub />
+      <GitHub user={user} />
       {user.isAuthorized && !user.loading && <Redirect to={'/'} />}
     </Container>
   );

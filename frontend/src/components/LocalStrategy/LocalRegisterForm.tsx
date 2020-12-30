@@ -14,7 +14,7 @@ import {
   FormGroup,
   Input,
   Link,
-} from './styled-components';
+} from './local-strategy-styles';
 
 interface FormRegisterData extends FormLoginData {
   firstName: string;

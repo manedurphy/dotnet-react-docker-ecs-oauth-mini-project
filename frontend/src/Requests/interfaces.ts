@@ -6,6 +6,7 @@ export interface GlobalState {
   alerts: Alert[];
   user: UserState;
   proctedData: ProtectedDataState[];
+  OAuth: boolean;
 }
 
 export interface WeatherData {

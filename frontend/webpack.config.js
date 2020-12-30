@@ -43,8 +43,8 @@ module.exports = {
       template: path.resolve(__dirname, 'dist', 'index.html'),
       title: 'Development',
     }),
-    new MiniCssExtractPlugin({
-      filename: './src/index.css',
-    }),
+    // new MiniCssExtractPlugin({
+    //   filename: './src/index.css',
+    // }),
   ],
 };

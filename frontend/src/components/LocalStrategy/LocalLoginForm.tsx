@@ -15,7 +15,7 @@ import {
   FormGroup,
   Input,
   Link,
-} from './styled-components';
+} from './local-strategy-styles';
 
 export interface LoginResponse {
   name: string;
