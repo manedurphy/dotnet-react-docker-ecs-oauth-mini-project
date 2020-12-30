@@ -49,6 +49,7 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  cursor: pointer;
 `;
 
 const InnerContainer = styled.div`
@@ -59,7 +60,7 @@ const InnerContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  box-shadow: -0px 1px 4px 0px;
+  box-shadow: -0px 1px 4px 0px grey;
 `;
 
 const Link = styled.a`

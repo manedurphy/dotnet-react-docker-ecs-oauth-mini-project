@@ -2,7 +2,11 @@ import axios, { AxiosResponse } from 'axios';
 import { handleSetTokens } from '../components/LocalStrategy/helpers';
 import { LoginResponse } from '../components/LocalStrategy/LocalLoginForm';
 import { UserState } from '../redux/slices/userSlice';
-import { GitHubUserReponse, RefreshResponse, WeatherData } from './interfaces';
+import {
+  GitHubUserReponse,
+  AuthorizeSuccessResponse,
+  WeatherData,
+} from './interfaces';
 
 const getToken = (): string | null => localStorage.getItem('token');
 
@@ -22,8 +26,8 @@ export async function requestWeatherData(): Promise<WeatherData> {
   return res.data;
 }
 
-export async function requestNewTokens(): Promise<RefreshResponse> {
-  const res: AxiosResponse<RefreshResponse> = await axios.post(
+export async function requestNewTokens(): Promise<AuthorizeSuccessResponse> {
+  const res: AxiosResponse<AuthorizeSuccessResponse> = await axios.post(
     'http://localhost:8080/api/Authorization/refresh',
     {
       refreshToken: getRefreshToken(),
@@ -47,57 +51,50 @@ export async function requestUserData(): Promise<UserState> {
 }
 
 export async function getAccessToken(code: string): Promise<void> {
-  try {
-    const accessToken: AxiosResponse<string> = await axios.post(
-      `http://localhost:8080/api/OAuthProfiles/get-access-token?code=${code}`
-    );
+  const accessToken: AxiosResponse<string> = await axios.post(
+    `http://localhost:8080/api/OAuthProfiles/get-access-token?code=${code}`
+  );
 
-    const token = accessToken.data.substring(1).split('=')[1].split('&')[0];
+  const token = accessToken.data.substring(1).split('=')[1].split('&')[0];
 
-    const user: AxiosResponse<GitHubUserReponse[]> = await axios.get(
-      'https://api.github.com/user/emails',
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const res: AxiosResponse<LoginResponse> = await axios.post(
-      'http://localhost:8080/api/OAuthProfiles/authorize',
-      {
-        email: user.data[0].email,
-        platform: 'GitHub',
-        accessToken: token,
+  const user: AxiosResponse<GitHubUserReponse[]> = await axios.get(
+    'https://api.github.com/user/emails',
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    }
+  );
 
-    handleSetTokens(res.data.token, res.data.refreshToken);
-  } catch (err) {
-    console.log(err);
-  }
+  const res: AxiosResponse<LoginResponse> = await axios.post(
+    'http://localhost:8080/api/OAuthProfiles/authorize',
+    {
+      email: user.data[0].email,
+      platform: 'GitHub',
+      accessToken: token,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  handleSetTokens(res.data.token, res.data.refreshToken);
 }
 
 export async function handleGoogleAuthorization(
   email: string,
   idToken: string
-) {
-  try {
-    const res = await axios.post(
-      'http://localhost:8080/api/OAuthProfiles/google',
-      {
-        idToken,
-        email,
-      },
-      { headers: { 'Content-Type': 'application/json' } }
-    );
-    console.log(res);
-  } catch (err) {
-    console.log(err);
-  }
+): Promise<AuthorizeSuccessResponse> {
+  const res: AxiosResponse<AuthorizeSuccessResponse> = await axios.post(
+    'http://localhost:8080/api/OAuthProfiles/google',
+    {
+      idToken,
+      email,
+    },
+    { headers: { 'Content-Type': 'application/json' } }
+  );
+
+  return res.data;
 }

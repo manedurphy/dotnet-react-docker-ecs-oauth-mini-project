@@ -16,6 +16,11 @@ interface SetUserAction {
   payload: UserState;
 }
 
+interface SetUserLoadingAction {
+  type: string;
+  payload: boolean;
+}
+
 const userSlice = createSlice({
   name: 'User',
   initialState: {
@@ -26,10 +31,16 @@ const userSlice = createSlice({
   },
   reducers: {
     setUser: (state: UserState, action: SetUserAction) => action.payload,
+    setUserLoading: (state: UserState, action: SetUserLoadingAction) => {
+      return {
+        ...state,
+        loading: action.payload,
+      };
+    },
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, setUserLoading } = userSlice.actions;
 
 export const getUserData = () => async (
   dispatch: ThunkDispatch<void, RootStateOrAny, Action<string>>

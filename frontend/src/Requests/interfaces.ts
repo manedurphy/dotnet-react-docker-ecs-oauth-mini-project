@@ -16,7 +16,7 @@ export interface WeatherData {
   summary: string;
 }
 
-export interface RefreshResponse {
+export interface AuthorizeSuccessResponse {
   name: string;
   email: string;
   token: string;
