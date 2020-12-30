@@ -1,12 +1,13 @@
 import { ProtectedDataState } from '../redux/slices/protectedData';
 import { UserState } from '../redux/slices/userSlice';
 import { Alert } from '../redux/slices/alertSlice';
+import { OAuthState } from '../redux/slices/OAuthSlice';
 
 export interface GlobalState {
   alerts: Alert[];
   user: UserState;
   protectedData: ProtectedDataState[];
-  OAuth: boolean;
+  OAuth: OAuthState;
 }
 
 export interface WeatherData {

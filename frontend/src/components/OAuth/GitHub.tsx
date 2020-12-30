@@ -1,24 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { getAccessToken } from '../../Requests/axios';
-import { getUserData, UserState } from '../../redux/slices/userSlice';
-import { setStatus } from '../../redux/slices/OAuthSlice';
+import {
+  getUserData,
+  setUserLoading,
+  UserState,
+} from '../../redux/slices/userSlice';
+import { setLoading } from '../../redux/slices/OAuthSlice';
 import styled from 'styled-components';
+import { setAlert } from '../../redux/slices/alertSlice';
+import { Redirect } from 'react-router-dom';
 
 const GitHub: React.FC = (props): JSX.Element => {
   const dispatch = useDispatch();
 
+  const [failedAuthorization, setFailedAuthorization] = useState<boolean>(
+    false
+  );
+
   useEffect((): void => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
-
-    if (code) {
-      dispatch(setStatus(true));
+    if (code && !failedAuthorization) {
+      dispatch(setLoading(true));
       getAccessToken(code)
         .then(() => {
+          dispatch(setUserLoading(true));
           dispatch(getUserData());
+          dispatch(setUserLoading(false));
         })
-        .catch((err) => console.log('ERROR IN GITHUB: ', err.response));
+        .catch((err) => {
+          setFailedAuthorization(true);
+          dispatch(setLoading(false));
+          dispatch(
+            setAlert({
+              message: err.response.data.message,
+              statusCode: err.response.status,
+            })
+          );
+        });
     }
   }, []);
 
@@ -35,6 +55,7 @@ const GitHub: React.FC = (props): JSX.Element => {
           </Link>
         </InnerContainer>
       </Container>
+      {failedAuthorization && <Redirect to="/oauth" />}
     </Box>
   );
 };

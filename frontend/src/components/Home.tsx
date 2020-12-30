@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
-import { setStatus } from '../redux/slices/OAuthSlice';
+import { setLoading } from '../redux/slices/OAuthSlice';
 import { getWeatherData } from '../redux/slices/protectedData';
 import { GlobalState } from '../Requests/interfaces';
 import { Link } from './LocalStrategy/local-strategy-styles';
@@ -16,7 +16,7 @@ const Home = () => {
 
   useEffect((): void => {
     dispatch(getWeatherData());
-    dispatch(setStatus(false));
+    dispatch(setLoading(false));
   }, []);
   return (
     <Container>

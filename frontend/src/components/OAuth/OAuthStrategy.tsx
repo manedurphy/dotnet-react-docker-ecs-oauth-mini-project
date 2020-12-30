@@ -6,19 +6,23 @@ import { useSelector } from 'react-redux';
 import { GlobalState } from '../../Requests/interfaces';
 import Spinner from '../UI/Spinner';
 import styled from 'styled-components';
+import { Alert } from '../LocalStrategy/local-strategy-styles';
 
 const OAuth = () => {
   const state = useSelector((state: GlobalState) => state);
-  const { user, OAuth } = state;
+  const { user, OAuth, alerts } = state;
 
-  return OAuth && !user.isAuthorized ? (
+  return OAuth.loading && !user.isAuthorized ? (
     <Spinner />
   ) : (
-    <Container>
-      <GitHub />
-      <Google />
-      {user.isAuthorized && !user.loading && <Redirect to={'/'} />}
-    </Container>
+    <React.Fragment>
+      {alerts.length ? <Alert>{alerts[0].message}</Alert> : null}
+      <Container>
+        <GitHub />
+        <Google />
+        {user.isAuthorized && !user.loading && <Redirect to={'/'} />}
+      </Container>
+    </React.Fragment>
   );
 };
 

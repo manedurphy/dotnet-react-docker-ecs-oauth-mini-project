@@ -13,11 +13,14 @@ namespace backend.ResponseMessages
     public static class OAuthResonseMessage
     {
       public const string ProfileExists = "A Profile with that email has already been authorized";
+      public const string ProfileOnDifferentPlatform = "A profile with that email has been authorized on a different platform";
     }
 
     public static class WeatherForecastResponse
     {
       public const string Unauthorized = "You are not authorized to receive this data. Please register or login with a third party provider";
     }
+
+
   }
 }

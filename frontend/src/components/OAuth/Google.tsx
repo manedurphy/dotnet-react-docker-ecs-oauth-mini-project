@@ -7,7 +7,8 @@ import { Box } from './GitHub';
 import { GoogleLogin } from 'react-google-login';
 import { AuthorizeSuccessResponse } from '../../Requests/interfaces';
 import { handleSetTokens } from '../LocalStrategy/helpers';
-import { setStatus } from '../../redux/slices/OAuthSlice';
+import { setLoading } from '../../redux/slices/OAuthSlice';
+import { setAlert } from '../../redux/slices/alertSlice';
 
 const Google: React.FC = (props): JSX.Element => {
   const dispatch = useDispatch();
@@ -17,7 +18,7 @@ const Google: React.FC = (props): JSX.Element => {
     const email = googleUser.getBasicProfile().getEmail();
 
     dispatch(setUserLoading(true));
-    dispatch(setStatus(true));
+    dispatch(setLoading(true));
 
     try {
       const res: AuthorizeSuccessResponse = await handleGoogleAuthorization(
@@ -35,7 +36,13 @@ const Google: React.FC = (props): JSX.Element => {
       );
     } catch (err) {
       dispatch(setUserLoading(false));
-      dispatch(setStatus(false));
+      dispatch(setLoading(false));
+      dispatch(
+        setAlert({
+          message: err.response.data.message,
+          statusCode: err.response.status,
+        })
+      );
     }
   };
 

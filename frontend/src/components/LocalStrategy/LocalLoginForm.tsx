@@ -77,31 +77,38 @@ const LocalLoginForm: React.FC = (): JSX.Element => {
   };
 
   return (
-    <FormContainer>
-      <Form onSubmit={handleSubmit}>
-        {alerts.length ? <Alert>{alerts[0].message}</Alert> : null}
-        <FormGroup>
-          <label htmlFor="email">Email</label>
-          <Input type="text" name="email" id="email" onChange={handleChange} />
-        </FormGroup>
-        <FormGroup>
-          <label htmlFor="password">Password</label>
-          <Input
-            type="text"
-            name="password"
-            id="password"
-            onChange={handleChange}
-          />
-        </FormGroup>
-        <ButtonGroup>
-          <button type="submit">Sign In</button>
-          <div>
-            Don't have an account? Sign up <Link href="/register">here</Link>
-          </div>
-        </ButtonGroup>
-      </Form>
-      {user.isAuthorized && !user.loading && <Redirect to={'/'} />}
-    </FormContainer>
+    <React.Fragment>
+      {alerts.length ? <Alert>{alerts[0].message}</Alert> : null}
+      <FormContainer>
+        <Form onSubmit={handleSubmit}>
+          <FormGroup>
+            <label htmlFor="email">Email</label>
+            <Input
+              type="text"
+              name="email"
+              id="email"
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <label htmlFor="password">Password</label>
+            <Input
+              type="text"
+              name="password"
+              id="password"
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <ButtonGroup>
+            <button type="submit">Sign In</button>
+            <div>
+              Don't have an account? Sign up <Link href="/register">here</Link>
+            </div>
+          </ButtonGroup>
+        </Form>
+        {user.isAuthorized && !user.loading && <Redirect to={'/'} />}
+      </FormContainer>
+    </React.Fragment>
   );
 };
 

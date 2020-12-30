@@ -60,64 +60,71 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
   };
 
   return (
-    <FormContainer>
-      <Form className={'form'} onSubmit={handleSubmit}>
-        {alerts.length ? (
-          <Alert className={'alert'}>{alerts[0].message}</Alert>
-        ) : null}
-        <FormGroup>
-          <label htmlFor="firstName">First Name</label>
-          <Input
-            type="text"
-            name="firstName"
-            id="firstName"
-            onChange={handleChange}
-          />
-        </FormGroup>
-        <FormGroup>
-          <label htmlFor="lastName">Last Name</label>
-          <Input
-            type="text"
-            name="lastName"
-            id="lastName"
-            onChange={handleChange}
-          />
-        </FormGroup>
-        <FormGroup>
-          <label htmlFor="email">Email</label>
-          <Input type="text" name="email" id="email" onChange={handleChange} />
-        </FormGroup>
-        <FormGroup>
-          <label htmlFor="password">Password</label>
-          <Input
-            type="text"
-            name="password"
-            id="password"
-            onChange={handleChange}
-          />
-        </FormGroup>
-        <FormGroup>
-          <label htmlFor="password2">Password2</label>
-          <Input
-            type="text"
-            name="password2"
-            id="password2"
-            onChange={handleChange}
-          />
-        </FormGroup>
-        <ButtonGroup>
-          <button type="submit">Sign Up</button>
-          <div>
-            Have an account? Sign in{' '}
-            <Link className={'here-link'} href="/login">
-              here
-            </Link>
-          </div>
-        </ButtonGroup>
-        {isRegistered && <Redirect to={'/login'} />}
-        {user.isAuthorized && !user.loading && <Redirect to={'/'} />}
-      </Form>
-    </FormContainer>
+    <React.Fragment>
+      {alerts.length ? (
+        <Alert className={'alert'}>{alerts[0].message}</Alert>
+      ) : null}
+      <FormContainer>
+        <Form className={'form'} onSubmit={handleSubmit}>
+          <FormGroup>
+            <label htmlFor="firstName">First Name</label>
+            <Input
+              type="text"
+              name="firstName"
+              id="firstName"
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <label htmlFor="lastName">Last Name</label>
+            <Input
+              type="text"
+              name="lastName"
+              id="lastName"
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <label htmlFor="email">Email</label>
+            <Input
+              type="text"
+              name="email"
+              id="email"
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <label htmlFor="password">Password</label>
+            <Input
+              type="text"
+              name="password"
+              id="password"
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <label htmlFor="password2">Password2</label>
+            <Input
+              type="text"
+              name="password2"
+              id="password2"
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <ButtonGroup>
+            <button type="submit">Sign Up</button>
+            <div>
+              Have an account? Sign in{' '}
+              <Link className={'here-link'} href="/login">
+                here
+              </Link>
+            </div>
+          </ButtonGroup>
+          {isRegistered && <Redirect to={'/login'} />}
+          {user.isAuthorized && !user.loading && <Redirect to={'/'} />}
+        </Form>
+      </FormContainer>
+    </React.Fragment>
   );
 };
 

@@ -1,13 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export interface OAuthState {
+  loading: boolean;
+}
+
+interface OAuthAction {
+  type: string;
+  payload: boolean;
+}
+
 const OAuthSlice = createSlice({
   name: 'OAuth',
-  initialState: false,
+  initialState: {
+    loading: false,
+  },
   reducers: {
-    setStatus: (state, action) => action.payload,
+    setLoading: (state: OAuthState, action: OAuthAction) => {
+      return {
+        ...state,
+        loading: action.payload,
+      };
+    },
   },
 });
 
-export const { setStatus } = OAuthSlice.actions;
+export const { setLoading } = OAuthSlice.actions;
 
 export default OAuthSlice.reducer;
