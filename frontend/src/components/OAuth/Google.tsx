@@ -34,7 +34,8 @@ const Google: React.FC = (props): JSX.Element => {
         })
       );
     } catch (err) {
-      console.log(err);
+      dispatch(setUserLoading(false));
+      dispatch(setStatus(false));
     }
   };
 
