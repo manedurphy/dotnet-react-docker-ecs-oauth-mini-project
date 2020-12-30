@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { useDispatch } from 'react-redux';
-import { add, remove } from '../../redux/slices/alertSlice';
+import { add, remove, setAlert } from '../../redux/slices/alertSlice';
 import { setUser } from '../../redux/slices/userSlice';
 import { handleSetTokens } from './helpers';
+import { getWeatherData } from '../../redux/slices/protectedData';
 
 interface LoginResponse {
   name: string;
@@ -43,13 +44,14 @@ const LocalLoginForm: React.FC = (): JSX.Element => {
 
       dispatch(setUser({ name: res.data.name, email: res.data.email }));
       handleSetTokens(res.data.token, res.data.refreshToken);
+      dispatch(getWeatherData());
     } catch (err) {
       dispatch(
-        add({ message: err.response.data, statusCode: err.response.status })
+        setAlert({
+          message: err.response.data,
+          statusCode: err.response.status,
+        })
       );
-      setTimeout(() => {
-        dispatch(remove());
-      }, 3000);
     }
   };
 

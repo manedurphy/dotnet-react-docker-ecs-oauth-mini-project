@@ -1,28 +1,38 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { Action, createSlice, ThunkDispatch } from '@reduxjs/toolkit';
+import { RootStateOrAny } from 'react-redux';
 
-export interface AlertState {
+export interface Alert {
   message: string;
   statusCode: number;
 }
 
 interface AlertAction {
   type: string;
-  payload: AlertState;
+  payload: Alert;
 }
 
 const alertSlice = createSlice({
   name: 'alerts',
   initialState: [],
   reducers: {
-    add: (state: AlertState[], action: AlertAction) => {
+    add: (state: Alert[], action: AlertAction) => {
       state.push(action.payload);
     },
-    remove: (state: AlertState[]) => {
+    remove: (state: Alert[]) => {
       state.shift();
     },
   },
 });
 
 export const { add, remove } = alertSlice.actions;
+
+export const setAlert = (alert: Alert) => (
+  dispatch: ThunkDispatch<void, RootStateOrAny, Action<string>>
+) => {
+  dispatch(add(alert));
+  setTimeout(() => {
+    dispatch(remove());
+  }, 3000);
+};
 
 export default alertSlice.reducer;

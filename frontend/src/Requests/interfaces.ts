@@ -1,9 +1,9 @@
-import { AlertState } from '../redux/slices/alertSlice';
 import { ProtectedDataState } from '../redux/slices/protectedData';
 import { UserState } from '../redux/slices/userSlice';
+import { Alert } from '../redux/slices/alertSlice';
 
 export interface GlobalState {
-  alerts: AlertState[];
+  alerts: Alert[];
   user: UserState;
   proctedData: ProtectedDataState[];
 }

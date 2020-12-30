@@ -7,7 +7,7 @@ const getToken = (): string | null => localStorage.getItem('token');
 const getRefreshToken = (): string | null =>
   localStorage.getItem('refreshToken');
 
-export async function getWeatherData(): Promise<WeatherData> {
+export async function requestWeatherData(): Promise<WeatherData> {
   const res: AxiosResponse<WeatherData> = await axios.get(
     'http://localhost:8080/api/WeatherForecast',
     {
@@ -20,7 +20,7 @@ export async function getWeatherData(): Promise<WeatherData> {
   return res.data;
 }
 
-export async function getNewToken(): Promise<RefreshResponse> {
+export async function requestNewTokens(): Promise<RefreshResponse> {
   const res: AxiosResponse<RefreshResponse> = await axios.post(
     'http://localhost:8080/api/Authorization/refresh',
     {
@@ -31,7 +31,7 @@ export async function getNewToken(): Promise<RefreshResponse> {
   return res.data;
 }
 
-export async function getUserData(): Promise<UserState> {
+export async function requestUserData(): Promise<UserState> {
   const res: AxiosResponse<UserState> = await axios.get(
     'http://localhost:8080/api/Users/info',
     {
