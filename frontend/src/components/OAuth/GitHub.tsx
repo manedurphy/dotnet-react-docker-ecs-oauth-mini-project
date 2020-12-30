@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAccessToken } from '../../Requests/axios';
 import {
   getUserData,
@@ -10,28 +10,25 @@ import { setLoading } from '../../redux/slices/OAuthSlice';
 import styled from 'styled-components';
 import { setAlert } from '../../redux/slices/alertSlice';
 import { Redirect } from 'react-router-dom';
+import { GlobalState } from '../../Requests/interfaces';
 
 const GitHub: React.FC = (props): JSX.Element => {
   const dispatch = useDispatch();
-
-  const [failedAuthorization, setFailedAuthorization] = useState<boolean>(
-    false
-  );
+  const { loading } = useSelector((state: GlobalState) => state.OAuth);
 
   useEffect((): void => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
-    if (code && !failedAuthorization) {
+    if (code) {
       dispatch(setLoading(true));
       getAccessToken(code)
         .then(() => {
           dispatch(setUserLoading(true));
           dispatch(getUserData());
-          dispatch(setUserLoading(false));
         })
         .catch((err) => {
-          setFailedAuthorization(true);
           dispatch(setLoading(false));
+          console.log(err.response);
           dispatch(
             setAlert({
               message: err.response.data.message,
@@ -55,7 +52,7 @@ const GitHub: React.FC = (props): JSX.Element => {
           </Link>
         </InnerContainer>
       </Container>
-      {failedAuthorization && <Redirect to="/oauth" />}
+      {loading && <Redirect to="/oauth" />}
     </Box>
   );
 };

@@ -92,7 +92,7 @@ namespace backend.Controllers
           }
           else
           {
-            return BadRequest();
+            return BadRequest(new Alert(ResponseMessages.ResponseMessage.OAuthResonseMessage.ProfileOnDifferentPlatform));
           }
 
           var token = _tokenService.GenerateToken(profile.Id);
