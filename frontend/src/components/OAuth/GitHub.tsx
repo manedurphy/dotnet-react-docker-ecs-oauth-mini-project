@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { getAccessToken } from '../../Requests/axios';
 import { getUserData, UserState } from '../../redux/slices/userSlice';
 import { setStatus } from '../../redux/slices/OAuthSlice';
+import styled from 'styled-components';
 
 interface OAuthProps {
   user: UserState;
@@ -26,22 +27,31 @@ const GitHub: React.FC<OAuthProps> = (props): JSX.Element => {
   }, []);
 
   return (
-    <div className={'box'}>
+    <Box>
       <h2>
         Login With GitHub{' '}
         <span>
           <i className="fab fa-github"></i>
         </span>
       </h2>
-      <a
-        className={'link'}
-        href="https://github.com/login/oauth/authorize?client_id=dc66fcdec00e52ce44b8&scope=user&redirect_uri=http://localhost:3000/oauth"
-      >
+      <Link href="https://github.com/login/oauth/authorize?client_id=dc66fcdec00e52ce44b8&scope=user&redirect_uri=http://localhost:3000/oauth">
         Click here
-      </a>
+      </Link>
       <input type="text" onChange={() => console.log('Change')} />
-    </div>
+    </Box>
   );
 };
+
+const Box = styled.div`
+  border: 3px solid black;
+  width: 285px;
+  text-align: center;
+`;
+
+const Link = styled.a`
+  color: black;
+  text-decoration: none;
+  font-size: 1rem;
+`;
 
 export default GitHub;

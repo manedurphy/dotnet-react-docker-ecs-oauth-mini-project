@@ -5,6 +5,14 @@ import { setAlert } from '../../redux/slices/alertSlice';
 import { FormLoginData } from './LocalLoginForm';
 import { Redirect } from 'react-router-dom';
 import { GlobalState } from '../../Requests/interfaces';
+import {
+  ButtonGroup,
+  Form,
+  FormContainer,
+  FormGroup,
+  Input,
+  Link,
+} from './local-strategy-styles';
 
 interface FormRegisterData extends FormLoginData {
   firstName: string;
@@ -50,79 +58,65 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
     }
   };
 
-  const test = () => {
-    console.log('test');
-  };
-
   return (
-    <div className={'form-container'}>
-      <form className={'form'} onSubmit={handleSubmit}>
+    <FormContainer>
+      <Form className={'form'} onSubmit={handleSubmit}>
         {alerts.length ? (
           <div className={'alert'}>{alerts[0].message}</div>
         ) : null}
-        <div className={'form-group'}>
+        <FormGroup>
           <label htmlFor="firstName">First Name</label>
-          <input
-            className={'text-input'}
+          <Input
             type="text"
             name="firstName"
             id="firstName"
-            onChange={() => console.log('CHANGE')}
+            onChange={handleChange}
           />
-        </div>
-        <div className={'form-group'}>
+        </FormGroup>
+        <FormGroup>
           <label htmlFor="lastName">Last Name</label>
-          <input
-            className={'text-input'}
+          <Input
             type="text"
             name="lastName"
             id="lastName"
             onChange={handleChange}
           />
-        </div>
-        <div className={'form-group'}>
+        </FormGroup>
+        <FormGroup>
           <label htmlFor="email">Email</label>
-          <input
-            className={'text-input'}
-            type="text"
-            name="email"
-            id="email"
-            onChange={handleChange}
-          />
-        </div>
-        <div className={'form-group'}>
+          <Input type="text" name="email" id="email" onChange={handleChange} />
+        </FormGroup>
+        <FormGroup>
           <label htmlFor="password">Password</label>
-          <input
-            className={'text-input'}
+          <Input
             type="text"
             name="password"
             id="password"
             onChange={handleChange}
           />
-        </div>
-        <div className={'form-group'}>
+        </FormGroup>
+        <FormGroup>
           <label htmlFor="password2">Password2</label>
-          <input
-            className={'text-input'}
+          <Input
             type="text"
             name="password2"
             id="password2"
             onChange={handleChange}
           />
-        </div>
-        <div className={'button-group'}>
+        </FormGroup>
+        <ButtonGroup>
           <button type="submit">Sign Up</button>
           <div>
             Have an account? Sign in{' '}
-            <a className={'here-link'} href="/login">
+            <Link className={'here-link'} href="/login">
               here
-            </a>
+            </Link>
           </div>
-        </div>
+        </ButtonGroup>
         {isRegistered && <Redirect to={'/login'} />}
         {user.isAuthorized && !user.loading && <Redirect to={'/'} />}
-      </form>
-    </div>
+      </Form>
+    </FormContainer>
   );
 };
 
