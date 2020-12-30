@@ -1,5 +1,6 @@
 import React from 'react';
 import GitHub from './GitHub';
+import Google from './Google';
 import { Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '../../Requests/interfaces';
@@ -14,7 +15,8 @@ const OAuth = () => {
     <Spinner />
   ) : (
     <Container>
-      <GitHub user={user} />
+      <GitHub />
+      <Google />
       {user.isAuthorized && !user.loading && <Redirect to={'/'} />}
     </Container>
   );
@@ -22,9 +24,9 @@ const OAuth = () => {
 
 const Container = styled.div`
   width: 100%;
-  display: flex;
-  justify-content: center;
   position: absolute;
+  display: flex;
+  justify-content: space-evenly;
   top: 40%;
 `;
 

@@ -82,3 +82,22 @@ export async function getAccessToken(code: string): Promise<void> {
     console.log(err);
   }
 }
+
+export async function handleGoogleAuthorization(
+  email: string,
+  idToken: string
+) {
+  try {
+    const res = await axios.post(
+      'http://localhost:8080/api/OAuthProfiles/google',
+      {
+        idToken,
+        email,
+      },
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+    console.log(res);
+  } catch (err) {
+    console.log(err);
+  }
+}

@@ -5,11 +5,7 @@ import { getUserData, UserState } from '../../redux/slices/userSlice';
 import { setStatus } from '../../redux/slices/OAuthSlice';
 import styled from 'styled-components';
 
-interface OAuthProps {
-  user: UserState;
-}
-
-const GitHub: React.FC<OAuthProps> = (props): JSX.Element => {
+const GitHub: React.FC = (props): JSX.Element => {
   const dispatch = useDispatch();
 
   useEffect((): void => {
@@ -28,15 +24,17 @@ const GitHub: React.FC<OAuthProps> = (props): JSX.Element => {
 
   return (
     <Box>
-      <h2>
-        Login With GitHub{' '}
-        <span>
-          <i className="fab fa-github"></i>
-        </span>
-      </h2>
-      <Link href="https://github.com/login/oauth/authorize?client_id=dc66fcdec00e52ce44b8&scope=user&redirect_uri=http://localhost:3000/oauth">
-        Click here
-      </Link>
+      <h2>Login With GitHub</h2>
+      <Container>
+        <InnerContainer>
+          <span>
+            <i className="fab fa-github"></i>
+          </span>
+          <Link href="https://github.com/login/oauth/authorize?client_id=dc66fcdec00e52ce44b8&scope=user&redirect_uri=http://localhost:3000/oauth">
+            Click here
+          </Link>
+        </InnerContainer>
+      </Container>
     </Box>
   );
 };
@@ -45,6 +43,23 @@ export const Box = styled.div`
   border: 3px solid black;
   width: 285px;
   text-align: center;
+`;
+
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
+const InnerContainer = styled.div`
+  border: 1px solid black;
+  height: 36px;
+  width: 120px;
+
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  box-shadow: -0px 1px 4px 0px;
 `;
 
 const Link = styled.a`
