@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAlert } from '../../redux/slices/alertSlice';
 import { FormLoginData } from './LocalLoginForm';
 import { Redirect } from 'react-router-dom';
-import { GlobalState } from '../../Requests/interfaces';
 import {
-  Alert,
+  GlobalState,
+  RegisterSuccessResponse,
+} from '../../Requests/interfaces';
+import {
+  AlertDanger,
   ButtonGroup,
   Form,
   FormContainer,
@@ -37,18 +40,28 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    console.log('HANDLE CHANGE');
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8080/api/Users/register', formData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const res: AxiosResponse<RegisterSuccessResponse> = await axios.post(
+        'http://localhost:8080/api/Users/register',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       setIsRegistered(true);
+      dispatch(
+        setAlert({
+          message: `Successfully registered as ${res.data.email}`,
+          statusCode: res.status,
+        })
+      );
+      console.log(res);
     } catch (err) {
       dispatch(
         setAlert({
@@ -62,7 +75,7 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
   return (
     <React.Fragment>
       {alerts.length ? (
-        <Alert className={'alert'}>{alerts[0].message}</Alert>
+        <AlertDanger className={'alert'}>{alerts[0].message}</AlertDanger>
       ) : null}
       <FormContainer>
         <Form className={'form'} onSubmit={handleSubmit}>

@@ -4,14 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAlert } from '../../redux/slices/alertSlice';
 import { setUser } from '../../redux/slices/userSlice';
 import { handleSetTokens } from './helpers';
-import { getWeatherData } from '../../redux/slices/protectedData';
+import { getWeatherData } from '../../redux/slices/protectedDataSlice';
 import { Redirect } from 'react-router-dom';
 import {
   AuthorizeSuccessResponse,
   GlobalState,
 } from '../../Requests/interfaces';
 import {
-  Alert,
+  AlertDanger,
+  AlertSuccess,
   ButtonGroup,
   Form,
   FormContainer,
@@ -61,7 +62,12 @@ const LocalLoginForm: React.FC = (): JSX.Element => {
         })
       );
       handleSetTokens(res.data.token, res.data.refreshToken);
-      dispatch(getWeatherData());
+      dispatch(
+        setAlert({
+          message: `Logged in as ${res.data.email}`,
+          statusCode: res.status,
+        })
+      );
     } catch (err) {
       dispatch(
         setAlert({
@@ -74,7 +80,11 @@ const LocalLoginForm: React.FC = (): JSX.Element => {
 
   return (
     <React.Fragment>
-      {alerts.length ? <Alert>{alerts[0].message}</Alert> : null}
+      {alerts.length && alerts[0].statusCode >= 400 ? (
+        <AlertDanger>{alerts[0].message}</AlertDanger>
+      ) : alerts.length && alerts[0].statusCode < 400 ? (
+        <AlertSuccess>{alerts[0].message}</AlertSuccess>
+      ) : null}
       <FormContainer>
         <Form onSubmit={handleSubmit}>
           <FormGroup>

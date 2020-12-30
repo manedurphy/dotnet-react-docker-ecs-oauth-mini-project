@@ -1,4 +1,4 @@
-import { ProtectedDataState } from '../redux/slices/protectedData';
+import { ProtectedDataState } from '../redux/slices/protectedDataSlice';
 import { UserState } from '../redux/slices/userSlice';
 import { Alert } from '../redux/slices/alertSlice';
 import { OAuthState } from '../redux/slices/OAuthSlice';
@@ -22,6 +22,13 @@ export interface AuthorizeSuccessResponse {
   email: string;
   token: string;
   refreshToken: string;
+}
+
+export interface RegisterSuccessResponse {
+  email: string;
+  firstName: string;
+  id: string;
+  lastName: string;
 }
 
 export interface GitHubUserReponse {

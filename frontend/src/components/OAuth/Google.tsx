@@ -32,6 +32,12 @@ const Google: React.FC = (): JSX.Element => {
           loading: false,
         })
       );
+      dispatch(
+        setAlert({
+          message: 'Profile has been successfully authorized!',
+          statusCode: 201,
+        })
+      );
     } catch (err) {
       dispatch(setUserLoading(false));
       dispatch(setOAuthLoading(false));

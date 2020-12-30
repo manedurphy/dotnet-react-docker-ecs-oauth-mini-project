@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { GlobalState } from '../../Requests/interfaces';
 import Spinner from '../UI/Spinner';
 import styled from 'styled-components';
-import { Alert } from '../LocalStrategy/local-strategy-styles';
+import { AlertDanger } from '../LocalStrategy/local-strategy-styles';
 
 const OAuth = () => {
   const state = useSelector((state: GlobalState) => state);
@@ -16,7 +16,7 @@ const OAuth = () => {
     <Spinner />
   ) : (
     <React.Fragment>
-      {alerts.length ? <Alert>{alerts[0].message}</Alert> : null}
+      {alerts.length ? <AlertDanger>{alerts[0].message}</AlertDanger> : null}
       <Container>
         <GitHub />
         <Google />

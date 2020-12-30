@@ -24,11 +24,18 @@ export const Input = styled.input`
 export const Alert = styled.div`
   width: 100%;
   height: 30px;
-  background-color: #ff5b1e;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+export const AlertDanger = styled(Alert)`
+  background-color: #ff5b1e;
+`;
+
+export const AlertSuccess = styled(Alert)`
+  background-color: green;
 `;
 
 export const ButtonGroup = styled.div`
