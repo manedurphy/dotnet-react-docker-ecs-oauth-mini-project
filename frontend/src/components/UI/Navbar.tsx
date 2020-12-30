@@ -6,10 +6,12 @@ const Navbar = () => {
   return (
     <Base>
       <Links>
-        <Link /*className={'link'} style={LinkStyle}*/ to="/register">
+        <Link className={'nav-link'} to="/register">
           Local
         </Link>
-        <Link /*className={'link'} style={LinkStyle}*/ to="/oauth">OAuth</Link>
+        <Link className={'nav-link'} to="/oauth">
+          OAuth
+        </Link>
       </Links>
     </Base>
   );
@@ -29,11 +31,5 @@ const Links = styled.div`
   justify-content: space-between;
   margin-right: 25px;
 `;
-
-const LinkStyle = {
-  color: 'white',
-  textDecoration: 'none',
-  fontSize: '1.5rem',
-};
 
 export default Navbar;

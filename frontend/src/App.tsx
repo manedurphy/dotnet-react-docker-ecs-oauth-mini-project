@@ -6,15 +6,13 @@ import Home from './components/Home';
 import OAuth from './components/OAuth/OAuthStrategy';
 import { Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { getWeatherData } from './redux/slices/protectedData';
 import { getUserData } from './redux/slices/userSlice';
 
 const App: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  useEffect((): void => {
     dispatch(getUserData());
-    dispatch(getWeatherData());
   }, []);
   return (
     <React.Fragment>
