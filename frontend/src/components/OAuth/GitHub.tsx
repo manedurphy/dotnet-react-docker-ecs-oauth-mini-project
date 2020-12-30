@@ -25,10 +25,6 @@ const GitHub: React.FC<OAuthProps> = (props): JSX.Element => {
     }
   }, []);
 
-  const test = () => {
-    console.log('test');
-  };
-
   return (
     <div className={'box'}>
       <h2>
@@ -43,7 +39,7 @@ const GitHub: React.FC<OAuthProps> = (props): JSX.Element => {
       >
         Click here
       </a>
-      <input type="text" onChange={test} />
+      <input type="text" onChange={() => console.log('Change')} />
     </div>
   );
 };
