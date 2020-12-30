@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
 import { handleSetTokens } from '../components/LocalStrategy/helpers';
-import { LoginResponse } from '../components/LocalStrategy/LocalLoginForm';
 import { UserState } from '../redux/slices/userSlice';
 import {
   GitHubUserReponse,
@@ -50,7 +49,9 @@ export async function requestUserData(): Promise<UserState> {
   return res.data;
 }
 
-export async function getAccessToken(code: string): Promise<void> {
+export async function handleGitHubAuthorization(
+  code: string
+): Promise<AuthorizeSuccessResponse> {
   const accessToken: AxiosResponse<string> = await axios.post(
     `http://localhost:8080/api/OAuthProfiles/get-access-token?code=${code}`
   );
@@ -66,7 +67,7 @@ export async function getAccessToken(code: string): Promise<void> {
     }
   );
 
-  const res: AxiosResponse<LoginResponse> = await axios.post(
+  const res: AxiosResponse<AuthorizeSuccessResponse> = await axios.post(
     'http://localhost:8080/api/OAuthProfiles/authorize',
     {
       email: user.data[0].email,
@@ -81,6 +82,7 @@ export async function getAccessToken(code: string): Promise<void> {
   );
 
   handleSetTokens(res.data.token, res.data.refreshToken);
+  return res.data;
 }
 
 export async function handleGoogleAuthorization(
@@ -96,5 +98,6 @@ export async function handleGoogleAuthorization(
     { headers: { 'Content-Type': 'application/json' } }
   );
 
+  handleSetTokens(res.data.token, res.data.refreshToken);
   return res.data;
 }

@@ -53,7 +53,7 @@ namespace backend.Controllers
     public async Task<ActionResult> Authorize(OAuthProfileSendDto oAuthProfileSendDto)
     {
 
-      var existingUser = _userService.GetByEmail(oAuthProfileSendDto.Email);
+      User existingUser = _userService.GetByEmail(oAuthProfileSendDto.Email);
       if (existingUser != null)
       {
         return BadRequest();
@@ -62,22 +62,22 @@ namespace backend.Controllers
       using (HttpClient client = new HttpClient())
       {
 
-        var uri = new Uri("https://api.github.com/user/emails");
+        Uri uri = new Uri("https://api.github.com/user/emails");
         client.DefaultRequestHeaders.Add("Authorization", "Bearer " + oAuthProfileSendDto.AccessToken);
         client.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
 
-        var response = await client.GetAsync("https://api.github.com/user");
+        HttpResponseMessage response = await client.GetAsync("https://api.github.com/user");
 
         if (response.IsSuccessStatusCode)
         {
           var content = await response.Content.ReadAsStringAsync();
           var deserialized = JsonConvert.DeserializeObject<GitHubUserInfo>(content);
 
-          var profile = _oAuthService.GetByEmail(oAuthProfileSendDto.Email);
+          OAuthProfile profile = _oAuthService.GetByEmail(oAuthProfileSendDto.Email);
 
           if (profile == null)
           {
-            var newProfile = _mapper.Map<OAuthProfile>(oAuthProfileSendDto);
+            OAuthProfile newProfile = _mapper.Map<OAuthProfile>(oAuthProfileSendDto);
 
             newProfile.RefreshToken = _tokenService.GenerateRefreshToken();
             newProfile.UserName = deserialized.login;
@@ -95,7 +95,7 @@ namespace backend.Controllers
             return BadRequest(new Alert(ResponseMessages.ResponseMessage.OAuthResonseMessage.ProfileOnDifferentPlatform));
           }
 
-          var token = _tokenService.GenerateToken(profile.Id);
+          string token = _tokenService.GenerateToken(profile.Id);
           return Ok(new AuthResponse(deserialized.login, profile.Email, token, profile.RefreshToken));
         }
         else
@@ -110,7 +110,7 @@ namespace backend.Controllers
     public async Task<ActionResult> ValidateGoogleAccount(GoogleIdToken googleIdToken)
     {
 
-      var existingUser = _userService.GetByEmail(googleIdToken.Email);
+      User existingUser = _userService.GetByEmail(googleIdToken.Email);
       if (existingUser != null)
       {
         return BadRequest();
@@ -118,15 +118,15 @@ namespace backend.Controllers
 
       using (HttpClient client = new HttpClient())
       {
-        var uri = new Uri($"https://www.googleapis.com/oauth2/v3/tokeninfo?id_token={googleIdToken.IdToken}");
-        var response = await client.GetAsync(uri);
+        Uri uri = new Uri($"https://www.googleapis.com/oauth2/v3/tokeninfo?id_token={googleIdToken.IdToken}");
+        HttpResponseMessage response = await client.GetAsync(uri);
         var contents = await response.Content.ReadAsStringAsync();
         var deserialized = JsonConvert.DeserializeObject<GoogleUserInfo>(contents);
 
         if (response.IsSuccessStatusCode && deserialized.email_verified == "true")
         {
-          var profile = _oAuthService.GetByEmail(googleIdToken.Email);
-          var refreshToken = _tokenService.GenerateRefreshToken();
+          OAuthProfile profile = _oAuthService.GetByEmail(googleIdToken.Email);
+          string refreshToken = _tokenService.GenerateRefreshToken();
 
           if (profile == null)
           {
@@ -144,7 +144,7 @@ namespace backend.Controllers
             return BadRequest(new Alert(ResponseMessages.ResponseMessage.OAuthResonseMessage.ProfileOnDifferentPlatform));
           }
 
-          var token = _tokenService.GenerateToken(profile.Id);
+          string token = _tokenService.GenerateToken(profile.Id);
           return Ok(new AuthResponse(profile.UserName, profile.Email, token, profile.RefreshToken));
         }
       }

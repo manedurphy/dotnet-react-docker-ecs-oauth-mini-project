@@ -5,8 +5,11 @@ import { setAlert } from '../../redux/slices/alertSlice';
 import { setUser } from '../../redux/slices/userSlice';
 import { handleSetTokens } from './helpers';
 import { getWeatherData } from '../../redux/slices/protectedData';
-import { GlobalState } from '../../Requests/interfaces';
 import { Redirect } from 'react-router-dom';
+import {
+  AuthorizeSuccessResponse,
+  GlobalState,
+} from '../../Requests/interfaces';
 import {
   Alert,
   ButtonGroup,
@@ -16,13 +19,6 @@ import {
   Input,
   Link,
 } from './local-strategy-styles';
-
-export interface LoginResponse {
-  name: string;
-  email: string;
-  token: string;
-  refreshToken: string;
-}
 
 export interface FormLoginData {
   email: string;
@@ -46,7 +42,7 @@ const LocalLoginForm: React.FC = (): JSX.Element => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const res: AxiosResponse<LoginResponse> = await axios.post(
+      const res: AxiosResponse<AuthorizeSuccessResponse> = await axios.post(
         'http://localhost:8080/api/Users/login',
         formData,
         {

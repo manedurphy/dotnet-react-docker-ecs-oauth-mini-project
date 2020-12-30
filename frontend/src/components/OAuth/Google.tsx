@@ -3,14 +3,13 @@ import { useDispatch } from 'react-redux';
 import { handleGoogleAuthorization } from '../../Requests/axios';
 import { setUserLoading, setUser } from '../../redux/slices/userSlice';
 import styled from 'styled-components';
-import { Box } from './GitHub';
+import { Box } from './oauth-styles';
 import { GoogleLogin } from 'react-google-login';
 import { AuthorizeSuccessResponse } from '../../Requests/interfaces';
-import { handleSetTokens } from '../LocalStrategy/helpers';
-import { setLoading } from '../../redux/slices/OAuthSlice';
+import { setOAuthLoading } from '../../redux/slices/OAuthSlice';
 import { setAlert } from '../../redux/slices/alertSlice';
 
-const Google: React.FC = (props): JSX.Element => {
+const Google: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
 
   const onSignIn = async (googleUser: any): Promise<void> => {
@@ -18,25 +17,24 @@ const Google: React.FC = (props): JSX.Element => {
     const email = googleUser.getBasicProfile().getEmail();
 
     dispatch(setUserLoading(true));
-    dispatch(setLoading(true));
+    dispatch(setOAuthLoading(true));
 
     try {
-      const res: AuthorizeSuccessResponse = await handleGoogleAuthorization(
+      const successResponse: AuthorizeSuccessResponse = await handleGoogleAuthorization(
         email,
         idToken
       );
-      handleSetTokens(res.token, res.refreshToken);
       dispatch(
         setUser({
-          name: res.name,
-          email: res.email,
+          name: successResponse.name,
+          email: successResponse.email,
           isAuthorized: true,
           loading: false,
         })
       );
     } catch (err) {
       dispatch(setUserLoading(false));
-      dispatch(setLoading(false));
+      dispatch(setOAuthLoading(false));
       dispatch(
         setAlert({
           message: err.response.data.message,

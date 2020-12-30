@@ -1,41 +1,52 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAccessToken } from '../../Requests/axios';
-import {
-  getUserData,
-  setUserLoading,
-  UserState,
-} from '../../redux/slices/userSlice';
-import { setLoading } from '../../redux/slices/OAuthSlice';
+import { handleGitHubAuthorization } from '../../Requests/axios';
+import { setUser, setUserLoading } from '../../redux/slices/userSlice';
+import { setOAuthLoading } from '../../redux/slices/OAuthSlice';
 import styled from 'styled-components';
 import { setAlert } from '../../redux/slices/alertSlice';
 import { Redirect } from 'react-router-dom';
-import { GlobalState } from '../../Requests/interfaces';
+import { Box } from './oauth-styles';
+import {
+  AuthorizeSuccessResponse,
+  GlobalState,
+} from '../../Requests/interfaces';
 
-const GitHub: React.FC = (props): JSX.Element => {
+const GitHub: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state: GlobalState) => state.OAuth);
 
   useEffect((): void => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
+
     if (code) {
-      dispatch(setLoading(true));
-      getAccessToken(code)
-        .then(() => {
-          dispatch(setUserLoading(true));
-          dispatch(getUserData());
-        })
-        .catch((err) => {
-          dispatch(setLoading(false));
-          console.log(err.response);
+      dispatch(setUserLoading(true));
+      dispatch(setOAuthLoading(true));
+      (async () => {
+        try {
+          const successResponse: AuthorizeSuccessResponse = await handleGitHubAuthorization(
+            code
+          );
+          dispatch(
+            setUser({
+              name: successResponse.name,
+              email: successResponse.email,
+              isAuthorized: true,
+              loading: false,
+            })
+          );
+        } catch (err) {
+          dispatch(setUserLoading(false));
+          dispatch(setOAuthLoading(false));
           dispatch(
             setAlert({
               message: err.response.data.message,
               statusCode: err.response.status,
             })
           );
-        });
+        }
+      })();
     }
   }, []);
 
@@ -56,12 +67,6 @@ const GitHub: React.FC = (props): JSX.Element => {
     </Box>
   );
 };
-
-export const Box = styled.div`
-  border: 3px solid black;
-  width: 285px;
-  text-align: center;
-`;
 
 const Container = styled.div`
   width: 100%;

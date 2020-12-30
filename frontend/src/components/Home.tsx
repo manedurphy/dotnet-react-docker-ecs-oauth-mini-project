@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
-import { setLoading } from '../redux/slices/OAuthSlice';
+import { setOAuthLoading } from '../redux/slices/OAuthSlice';
 import { getWeatherData } from '../redux/slices/protectedData';
 import { GlobalState } from '../Requests/interfaces';
 import { Link } from './LocalStrategy/local-strategy-styles';
-import { Box } from './OAuth/GitHub';
+import { Box } from './OAuth/oauth-styles';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -16,7 +16,7 @@ const Home = () => {
 
   useEffect((): void => {
     dispatch(getWeatherData());
-    dispatch(setLoading(false));
+    dispatch(setOAuthLoading(false));
   }, []);
   return (
     <Container>

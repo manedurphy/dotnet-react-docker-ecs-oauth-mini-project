@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export interface OAuthState {
   loading: boolean;
-  authorized: boolean;
 }
 
 interface OAuthAction {
@@ -14,24 +13,17 @@ const OAuthSlice = createSlice({
   name: 'OAuth',
   initialState: {
     loading: false,
-    authorized: false,
   },
   reducers: {
-    setLoading: (state: OAuthState, action: OAuthAction) => {
+    setOAuthLoading: (state: OAuthState, action: OAuthAction) => {
       return {
         ...state,
         loading: action.payload,
       };
     },
-    setAuthorized: (state: OAuthState, action: OAuthAction) => {
-      return {
-        ...state,
-        authorized: action.payload,
-      };
-    },
   },
 });
 
-export const { setLoading } = OAuthSlice.actions;
+export const { setOAuthLoading } = OAuthSlice.actions;
 
 export default OAuthSlice.reducer;
