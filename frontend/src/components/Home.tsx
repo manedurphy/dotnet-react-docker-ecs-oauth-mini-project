@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { setOAuthLoading } from '../redux/slices/OAuthSlice';
 import { getWeatherData } from '../redux/slices/protectedDataSlice';
+import { deleteAccount } from '../Requests/axios';
 import { GlobalState } from '../Requests/interfaces';
 import { AlertSuccess, Link } from './LocalStrategy/local-strategy-styles';
 import { Box } from './OAuth/oauth-styles';
@@ -20,7 +21,14 @@ const Home = () => {
     dispatch(setOAuthLoading(false));
   }, []);
 
-  const handleDeleteAccount = () => {};
+  const handleDeleteAccount = async () => {
+    try {
+      const res = await deleteAccount();
+      console.log(res);
+    } catch (err) {
+      console.log(err.response);
+    }
+  };
 
   return (
     <React.Fragment>

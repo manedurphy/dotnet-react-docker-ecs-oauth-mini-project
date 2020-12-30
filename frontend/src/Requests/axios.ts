@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { handleSetTokens } from '../components/LocalStrategy/helpers';
+import { Alert } from '../redux/slices/alertSlice';
 import { UserState } from '../redux/slices/userSlice';
 import {
   GitHubUserReponse,
@@ -99,5 +100,14 @@ export async function handleGoogleAuthorization(
   );
 
   handleSetTokens(res.data.token, res.data.refreshToken);
+  return res.data;
+}
+
+export async function deleteAccount(): Promise<string> {
+  const res: AxiosResponse<string> = await axios.delete(
+    `http://localhost:8080/api/Authorization/delete/${getRefreshToken()}`
+  );
+
+  // console.log(res);
   return res.data;
 }

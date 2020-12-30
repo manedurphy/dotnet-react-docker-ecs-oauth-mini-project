@@ -97,5 +97,25 @@ namespace backend.Controllers
       return BadRequest();
     }
 
+
+    [HttpDelete("delete/{refreshToken}")]
+    public ActionResult DeleteAccount(string refreshToken)
+    {
+      User user = _userService.GetByRefreshToken(refreshToken);
+      if (user != null)
+      {
+        _userService.Delete(user);
+        return Ok(new Alert(ResponseMessages.ResponseMessage.AuthorizationResponse.DeletedUserAccount));
+      }
+
+      OAuthProfile profile = _oAuthService.GetByRefreshToken(refreshToken);
+      if (profile != null)
+      {
+        _oAuthService.Delete(profile);
+        return Ok(ResponseMessages.ResponseMessage.AuthorizationResponse.DeletedProfileAccount);
+      }
+
+      return NotFound(ResponseMessages.ResponseMessage.AuthorizationResponse.NotFound);
+    }
   }
 }

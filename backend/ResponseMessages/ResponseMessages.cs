@@ -21,6 +21,11 @@ namespace backend.ResponseMessages
       public const string Unauthorized = "You are not authorized to receive this data. Please register or login with a third party provider";
     }
 
-
+    public static class AuthorizationResponse
+    {
+      public const string NotFound = "User account or profile could not be found";
+      public const string DeletedUserAccount = "Your user account has been successfully deleted";
+      public const string DeletedProfileAccount = "Your OAuth profile account has been successfully deleted";
+    }
   }
 }

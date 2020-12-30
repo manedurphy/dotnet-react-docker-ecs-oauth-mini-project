@@ -2,10 +2,11 @@ namespace backend.Services
 {
   public interface IAuthorizationService<TEntity>
   {
-    TEntity Create(TEntity oAuthProfile);
+    TEntity Create(TEntity entity);
     TEntity GetById(string id);
     TEntity GetByEmail(string email);
     TEntity GetByRefreshToken(string refreshToken);
-    void Update(TEntity oAuthProfile);
+    void Update(TEntity entity);
+    void Delete(TEntity entity);
   }
 }

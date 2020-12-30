@@ -44,5 +44,10 @@ namespace backend.Services
     {
       return _users.Find<User>(user => user.RefreshToken == refreshToken).FirstOrDefault();
     }
+
+    public void Delete(User user)
+    {
+      _users.DeleteOne<User>(u => u.Id == user.Id);
+    }
   }
 }

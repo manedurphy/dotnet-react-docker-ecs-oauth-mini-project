@@ -37,7 +37,12 @@ namespace backend.Services
 
     public OAuthProfile GetByRefreshToken(string refreshToken)
     {
-      return _oAuthProfiles.Find<OAuthProfile>(user => user.RefreshToken == refreshToken).FirstOrDefault();
+      return _oAuthProfiles.Find<OAuthProfile>(p => p.RefreshToken == refreshToken).FirstOrDefault();
+    }
+
+    public void Delete(OAuthProfile oAuthProfile)
+    {
+      _oAuthProfiles.DeleteOne<OAuthProfile>(p => p.Id == oAuthProfile.Id);
     }
   }
 }
