@@ -17,7 +17,7 @@ import {
   Link,
 } from './styled-components';
 
-interface LoginResponse {
+export interface LoginResponse {
   name: string;
   email: string;
   token: string;

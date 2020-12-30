@@ -21,3 +21,10 @@ export interface RefreshResponse {
   token: string;
   refreshToken: string;
 }
+
+export interface GitHubUserReponse {
+  email: string;
+  primary: boolean;
+  verified: boolean;
+  visibility: string;
+}

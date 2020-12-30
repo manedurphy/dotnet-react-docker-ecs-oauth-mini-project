@@ -86,25 +86,5 @@ namespace backend.Controllers
       return Ok(new AuthResponse(user.FirstName, user.Email, token, user.RefreshToken));
     }
 
-    [HttpGet("info")]
-    [Authorize]
-    public ActionResult GetUserInfo()
-    {
-      string header = Request.Headers["Authorization"];
-      string[] splitHeader = header.Split(' ');
-      string token = splitHeader[1];
-
-      JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-      JwtSecurityToken readToken = handler.ReadToken(token) as JwtSecurityToken;
-      string Id = readToken.Claims.First(claim => claim.Type == "nameid").Value;
-
-      User user = _userService.GetById(Id);
-      if (user != null)
-      {
-        return Ok(new LoggedInResponse(user.FirstName, user.Email));
-      }
-
-      return BadRequest();
-    }
   }
 }

@@ -3,6 +3,9 @@ using AutoMapper;
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace backend.Controllers
 {
@@ -30,7 +33,7 @@ namespace backend.Controllers
     [HttpPost("refresh")]
     public ActionResult GetNewToken(RefreshTokenRequest refreshTokenRequest)
     {
-      var user = _userService.GetByRefreshToken(refreshTokenRequest.RefreshToken);
+      User user = _userService.GetByRefreshToken(refreshTokenRequest.RefreshToken);
       if (user != null)
       {
         if (user.RefreshToken != refreshTokenRequest.RefreshToken)
@@ -38,8 +41,8 @@ namespace backend.Controllers
           return Unauthorized();
         }
 
-        var newToken = _tokenService.GenerateToken(user.Id);
-        var newRefreshToken = _tokenService.GenerateRefreshToken();
+        string newToken = _tokenService.GenerateToken(user.Id);
+        string newRefreshToken = _tokenService.GenerateRefreshToken();
 
         user.RefreshToken = newRefreshToken;
         _userService.Update(user);
@@ -55,13 +58,40 @@ namespace backend.Controllers
           return Unauthorized();
         }
 
-        var newToken = _tokenService.GenerateToken(profile.Id);
-        var newRefreshToken = _tokenService.GenerateRefreshToken();
+        string newToken = _tokenService.GenerateToken(profile.Id);
+        string newRefreshToken = _tokenService.GenerateRefreshToken();
 
         profile.RefreshToken = newRefreshToken;
         _oAuthService.Update(profile);
 
         return Ok(new { token = newToken, refreshToken = newRefreshToken });
+      }
+
+      return BadRequest();
+    }
+
+    [HttpGet("info")]
+    [Authorize]
+    public ActionResult GetUserInfo()
+    {
+      string header = Request.Headers["Authorization"];
+      string[] splitHeader = header.Split(' ');
+      string token = splitHeader[1];
+
+      JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+      JwtSecurityToken readToken = handler.ReadToken(token) as JwtSecurityToken;
+      string Id = readToken.Claims.First(claim => claim.Type == "nameid").Value;
+
+      User user = _userService.GetById(Id);
+      if (user != null)
+      {
+        return Ok(new LoggedInResponse(user.FirstName, user.Email));
+      }
+
+      OAuthProfile profile = _oAuthService.GetById(Id);
+      if (profile != null)
+      {
+        return Ok(new LoggedInResponse(profile.UserName, profile.Email));
       }
 
       return BadRequest();

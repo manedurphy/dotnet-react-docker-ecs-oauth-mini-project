@@ -3,6 +3,7 @@ import Navbar from './components/UI/Navbar';
 import LocalRegisterForm from './components/LocalStrategy/LocalRegisterForm';
 import LocalLoginForm from './components/LocalStrategy/LocalLoginForm';
 import Home from './components/Home';
+import OAuth from './components/OAuth/OAuthStrategy';
 import { Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getWeatherData } from './redux/slices/protectedData';
@@ -19,6 +20,7 @@ const App: React.FC = (): JSX.Element => {
     <React.Fragment>
       <Navbar />
       <Route exact path={'/'} component={Home} />
+      <Route exact path={'/oauth'} component={OAuth} />
       <Route exact path={'/register'} component={LocalRegisterForm} />
       <Route exact path={'/login'} component={LocalLoginForm} />
     </React.Fragment>
