@@ -37,7 +37,6 @@ const GitHub: React.FC<OAuthProps> = (props): JSX.Element => {
       <Link href="https://github.com/login/oauth/authorize?client_id=dc66fcdec00e52ce44b8&scope=user&redirect_uri=http://localhost:3000/oauth">
         Click here
       </Link>
-      <input type="text" onChange={() => console.log('Change')} />
     </Box>
   );
 };
