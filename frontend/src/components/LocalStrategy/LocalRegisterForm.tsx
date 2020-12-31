@@ -18,6 +18,7 @@ import {
   Input,
   Link,
 } from './local-strategy-styles';
+import { backendUrl } from '../../App';
 
 interface FormRegisterData extends FormLoginData {
   firstName: string;
@@ -47,7 +48,7 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
     e.preventDefault();
     try {
       const res: AxiosResponse<RegisterSuccessResponse> = await axios.post(
-        '/api/Users/register',
+        `${backendUrl}/api/Users/register`,
         formData,
         {
           headers: {
@@ -62,7 +63,6 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
           statusCode: res.status,
         })
       );
-      console.log(res);
     } catch (err) {
       dispatch(
         setAlert({

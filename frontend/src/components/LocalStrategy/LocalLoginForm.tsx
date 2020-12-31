@@ -19,6 +19,7 @@ import {
   Input,
   Link,
 } from './local-strategy-styles';
+import { backendUrl } from '../../App';
 
 export interface FormLoginData {
   email: string;
@@ -43,7 +44,7 @@ const LocalLoginForm: React.FC = (): JSX.Element => {
     e.preventDefault();
     try {
       const res: AxiosResponse<AuthorizeSuccessResponse> = await axios.post(
-        '/api/Users/login',
+        `${backendUrl}/api/Users/login`,
         formData,
         {
           headers: {
