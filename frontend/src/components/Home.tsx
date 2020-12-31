@@ -78,14 +78,15 @@ const Container = styled.div`
 `;
 
 const BottomContainer = styled(Container)`
-  position: absolute;
-  bottom: 0;
+  position: fixed;
+  bottom: 10px;
 `;
 
 const BoxContainer = styled.div`
   width: 100%;
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
+  justify-items: center;
 `;
 
 export default Home;

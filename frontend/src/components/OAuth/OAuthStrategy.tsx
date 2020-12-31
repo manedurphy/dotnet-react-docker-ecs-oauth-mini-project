@@ -11,7 +11,7 @@ import {
   AlertSuccess,
 } from '../LocalStrategy/local-strategy-styles';
 
-const OAuth = () => {
+const OAuth: React.FC = (): JSX.Element => {
   const state = useSelector((state: GlobalState) => state);
   const { user, OAuth, alerts } = state;
 
