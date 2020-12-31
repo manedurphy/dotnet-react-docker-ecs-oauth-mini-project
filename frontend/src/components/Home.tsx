@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { setAlert } from '../redux/slices/alertSlice';
 import { setOAuthLoading } from '../redux/slices/OAuthSlice';
 import { getWeatherData } from '../redux/slices/protectedDataSlice';
+import { getUserData } from '../redux/slices/userSlice';
 import { deleteAccount } from '../Requests/axios';
 import { GlobalState } from '../Requests/interfaces';
 import { AlertSuccess, Link } from './LocalStrategy/local-strategy-styles';
@@ -25,6 +26,7 @@ const Home = () => {
   const handleDeleteAccount = async () => {
     try {
       const response = await deleteAccount();
+      dispatch(getUserData());
       dispatch(
         setAlert({
           message: response.message,

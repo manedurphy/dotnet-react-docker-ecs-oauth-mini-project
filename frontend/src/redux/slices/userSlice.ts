@@ -1,6 +1,9 @@
 import { Action, createSlice, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootStateOrAny } from 'react-redux';
-import { handleSetTokens } from '../../components/LocalStrategy/helpers';
+import {
+  handleRemoveTokens,
+  handleSetTokens,
+} from '../../components/LocalStrategy/helpers';
 import { requestNewTokens, requestUserData } from '../../Requests/axios';
 import { getWeatherData } from './protectedDataSlice';
 
@@ -79,6 +82,7 @@ export const getNewTokens = () => async (
         loading: false,
       })
     );
+    handleRemoveTokens();
   }
 };
 
