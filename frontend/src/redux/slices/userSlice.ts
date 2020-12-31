@@ -1,11 +1,11 @@
 import { Action, createSlice, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootStateOrAny } from 'react-redux';
+import { requestNewTokens, requestUserData } from '../../Requests/axios';
+import { getWeatherData } from './protectedDataSlice';
 import {
   handleRemoveTokens,
   handleSetTokens,
 } from '../../components/LocalStrategy/helpers';
-import { requestNewTokens, requestUserData } from '../../Requests/axios';
-import { getWeatherData } from './protectedDataSlice';
 
 export interface UserState {
   name: string;

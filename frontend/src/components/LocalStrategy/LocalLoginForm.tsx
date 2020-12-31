@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAlert } from '../../redux/slices/alertSlice';
 import { setUser } from '../../redux/slices/userSlice';
 import { handleSetTokens } from './helpers';
-import { getWeatherData } from '../../redux/slices/protectedDataSlice';
 import { Redirect } from 'react-router-dom';
 import {
   AuthorizeSuccessResponse,
