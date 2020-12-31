@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { getUserData } from './redux/slices/userSlice';
 
 export const backendUrl =
-  process.env.NODE_ENV === 'development'
+  process.env.DEVELOPMENT === 'true'
     ? 'http://localhost:8080'
     : 'http://ecs-lb-777866482.us-east-1.elb.amazonaws.com';
 
