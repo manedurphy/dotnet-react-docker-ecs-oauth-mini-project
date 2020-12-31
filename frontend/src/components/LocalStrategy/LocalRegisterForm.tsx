@@ -10,6 +10,7 @@ import {
 } from '../../Requests/interfaces';
 import {
   AlertDanger,
+  AlertSuccess,
   ButtonGroup,
   Form,
   FormContainer,
@@ -74,8 +75,10 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
 
   return (
     <React.Fragment>
-      {alerts.length ? (
-        <AlertDanger className={'alert'}>{alerts[0].message}</AlertDanger>
+      {alerts.length && alerts[0].statusCode >= 400 ? (
+        <AlertDanger>{alerts[0].message}</AlertDanger>
+      ) : alerts.length && alerts[0].statusCode < 400 ? (
+        <AlertSuccess>{alerts[0].message}</AlertSuccess>
       ) : null}
       <FormContainer>
         <Form className={'form'} onSubmit={handleSubmit}>

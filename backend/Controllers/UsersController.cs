@@ -4,10 +4,6 @@ using backend.DTOS;
 using backend.Models;
 using backend.ResponseMessages;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System;
-using Microsoft.AspNetCore.Authorization;
-using System.Linq;
 
 namespace backend.Controllers
 {

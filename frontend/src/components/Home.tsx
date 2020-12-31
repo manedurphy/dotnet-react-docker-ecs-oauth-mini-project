@@ -59,7 +59,7 @@ const Home: React.FC = (): JSX.Element => {
             ))}
           </BoxContainer>
         )}
-        {!user.isAuthorized && <Redirect to={'/login'} />}
+        {!user.isAuthorized && <Redirect to={'/register'} />}
       </Container>
       <BottomContainer>
         <p>
