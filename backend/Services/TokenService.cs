@@ -1,5 +1,6 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -36,12 +37,14 @@ namespace backend.Services
 
     public string GenerateRefreshToken()
     {
-      var randomNumber = new byte[32];
-      using (var range = RandomNumberGenerator.Create())
-      {
-        range.GetBytes(randomNumber);
-        return Convert.ToBase64String(randomNumber);
-      }
+      Random random = new Random();
+      byte[] buffer = new byte[80];
+
+      random.NextBytes(buffer);
+      string result = String.Concat(buffer.Select(x => x.ToString("X2")).ToArray());
+
+      return result + random.Next(16).ToString();
+
     }
   }
 }

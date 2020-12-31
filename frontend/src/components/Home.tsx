@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
+import { setAlert } from '../redux/slices/alertSlice';
 import { setOAuthLoading } from '../redux/slices/OAuthSlice';
 import { getWeatherData } from '../redux/slices/protectedDataSlice';
 import { deleteAccount } from '../Requests/axios';
@@ -23,10 +24,20 @@ const Home = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      const res = await deleteAccount();
-      console.log(res);
+      const response = await deleteAccount();
+      dispatch(
+        setAlert({
+          message: response.message,
+          statusCode: 204,
+        })
+      );
     } catch (err) {
-      console.log(err.response);
+      dispatch(
+        setAlert({
+          message: err.response.data.message,
+          statusCode: 404,
+        })
+      );
     }
   };
 

@@ -37,3 +37,7 @@ export interface GitHubUserReponse {
   verified: boolean;
   visibility: string;
 }
+
+export interface DeleteSuccessResponse {
+  message: string;
+}

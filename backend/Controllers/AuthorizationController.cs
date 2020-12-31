@@ -112,10 +112,10 @@ namespace backend.Controllers
       if (profile != null)
       {
         _oAuthService.Delete(profile);
-        return Ok(ResponseMessages.ResponseMessage.AuthorizationResponse.DeletedProfileAccount);
+        return Ok(new Alert(ResponseMessages.ResponseMessage.AuthorizationResponse.DeletedProfileAccount));
       }
 
-      return NotFound(ResponseMessages.ResponseMessage.AuthorizationResponse.NotFound);
+      return NotFound(new Alert(ResponseMessages.ResponseMessage.AuthorizationResponse.NotFound));
     }
   }
 }

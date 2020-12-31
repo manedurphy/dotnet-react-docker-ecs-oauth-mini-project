@@ -6,6 +6,7 @@ import {
   GitHubUserReponse,
   AuthorizeSuccessResponse,
   WeatherData,
+  DeleteSuccessResponse,
 } from './interfaces';
 
 const getToken = (): string | null => localStorage.getItem('token');
@@ -103,11 +104,10 @@ export async function handleGoogleAuthorization(
   return res.data;
 }
 
-export async function deleteAccount(): Promise<string> {
-  const res: AxiosResponse<string> = await axios.delete(
+export async function deleteAccount(): Promise<DeleteSuccessResponse> {
+  const res: AxiosResponse<DeleteSuccessResponse> = await axios.delete(
     `http://localhost:8080/api/Authorization/delete/${getRefreshToken()}`
   );
 
-  // console.log(res);
   return res.data;
 }
