@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAlert } from '../../redux/slices/alertSlice';
 import { FormLoginData } from './LocalLoginForm';
 import { Redirect } from 'react-router-dom';
+import { backendUrl } from '../../App';
 import {
   GlobalState,
   RegisterSuccessResponse,
@@ -18,7 +19,6 @@ import {
   Input,
   Link,
 } from './local-strategy-styles';
-import { backendUrl } from '../../App';
 
 interface FormRegisterData extends FormLoginData {
   firstName: string;
@@ -88,6 +88,7 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
               type="text"
               name="firstName"
               id="firstName"
+              required
               onChange={handleChange}
             />
           </FormGroup>
@@ -97,6 +98,7 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
               type="text"
               name="lastName"
               id="lastName"
+              required
               onChange={handleChange}
             />
           </FormGroup>
@@ -106,24 +108,27 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
               type="text"
               name="email"
               id="email"
+              required
               onChange={handleChange}
             />
           </FormGroup>
           <FormGroup>
             <label htmlFor="password">Password</label>
             <Input
-              type="text"
+              type="password"
               name="password"
               id="password"
+              required
               onChange={handleChange}
             />
           </FormGroup>
           <FormGroup>
             <label htmlFor="password2">Password2</label>
             <Input
-              type="text"
+              type="password"
               name="password2"
               id="password2"
+              required
               onChange={handleChange}
             />
           </FormGroup>

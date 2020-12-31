@@ -93,15 +93,17 @@ const LocalLoginForm: React.FC = (): JSX.Element => {
               type="text"
               name="email"
               id="email"
+              required
               onChange={handleChange}
             />
           </FormGroup>
           <FormGroup>
             <label htmlFor="password">Password</label>
             <Input
-              type="text"
+              type="password"
               name="password"
               id="password"
+              required
               onChange={handleChange}
             />
           </FormGroup>
