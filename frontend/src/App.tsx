@@ -8,7 +8,10 @@ import { Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getUserData } from './redux/slices/userSlice';
 
+/** DEVELOPMENT */
 // export const backendUrl = 'http://localhost:8080';
+
+/** PRODUCTION */
 export const backendUrl =
   'http://ecs-lb-backend-1125601049.us-east-1.elb.amazonaws.com';
 

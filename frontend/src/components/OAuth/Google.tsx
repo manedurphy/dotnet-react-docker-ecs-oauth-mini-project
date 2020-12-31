@@ -9,8 +9,11 @@ import { AuthorizeSuccessResponse } from '../../Requests/interfaces';
 import { setOAuthLoading } from '../../redux/slices/OAuthSlice';
 import { setAlert } from '../../redux/slices/alertSlice';
 
+/** DEVELOPMENT */
 // const GoogleUrl =
 //   '326224736164-ju106naimcs0er3phe2jt2e1qi6jbvks.apps.googleusercontent.com';
+
+/** PRODUCTION */
 const GoogleUrl =
   '950293235751-kii4o3i1kqgra5jr52cgnls5nl6mb9ue.apps.googleusercontent.com';
 
