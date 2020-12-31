@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h2>You are now Authorized!</h2>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+      integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const token = window.location.search
+        .substring(1)
+        .split('=')[1]
+        .split('&')[0];
+
+      fetch('https://api.github.com/user/emails', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((user) => {
+          return axios.post(
+            'http://localhost:8080/api/OAuthProfiles/authorize',
+            {
+              email: user[0].email,
+              platform: 'GitHub',
+              accessToken: token,
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+        })
+        .then((res) => {
+          console.log('RES: ', res);
+          localStorage.setItem('token', res.data.token);
+          localStorage.setItem('refreshToken', res.data.refreshToken);
+        })
+        .catch((err) => console.log(err));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <a
+      href="https://github.com/login/oauth/authorize?client_id=dc66fcdec00e52ce44b8&scope=user&redirect_uri=http://localhost:5500/frontend/home.html"
+    >
+      Login with github
+    </a>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+      integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta
+      name="google-signin-client_id"
+      content="897565853118-t5gkp9t1852pev5sjgc9hlckai2ijr4i.apps.googleusercontent.com"
+    />
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <a href="#" onclick="signOut();">Sign out</a>
+    <script>
+      axios
+        .get('http://localhost:8080/api/WeatherForecast')
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
+
+      function onSignIn(googleUser) {
+        const idToken = googleUser.getAuthResponse().id_token;
+        const email = googleUser.getBasicProfile().getEmail();
+
+        axios
+          .post(
+            'http://localhost:8080/api/OAuthProfiles/google',
+            {
+              idToken,
+              email,
+            },
+            { headers: { 'Content-Type': 'application/json' } }
+          )
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
+      }
+
+      function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          console.log('User signed out.');
+        });
+      }
+    </script>
+  </body>
+</html>
