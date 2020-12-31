@@ -43,7 +43,7 @@ const LocalLoginForm: React.FC = (): JSX.Element => {
     e.preventDefault();
     try {
       const res: AxiosResponse<AuthorizeSuccessResponse> = await axios.post(
-        'http://localhost:8080/api/Users/login',
+        '/api/Users/login',
         formData,
         {
           headers: {

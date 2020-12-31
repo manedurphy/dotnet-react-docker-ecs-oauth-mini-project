@@ -47,7 +47,7 @@ const LocalRegisterForm: React.FC = (): JSX.Element => {
     e.preventDefault();
     try {
       const res: AxiosResponse<RegisterSuccessResponse> = await axios.post(
-        'http://localhost:8080/api/Users/register',
+        '/api/Users/register',
         formData,
         {
           headers: {

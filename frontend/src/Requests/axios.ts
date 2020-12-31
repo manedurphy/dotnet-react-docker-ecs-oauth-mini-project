@@ -16,7 +16,7 @@ const getRefreshToken = (): string | null =>
 
 export async function requestWeatherData(): Promise<WeatherData> {
   const res: AxiosResponse<WeatherData> = await axios.get(
-    'http://localhost:8080/api/WeatherForecast',
+    '/api/WeatherForecast',
     {
       headers: {
         Authorization: `Bearer ${getToken()}`,
@@ -29,7 +29,7 @@ export async function requestWeatherData(): Promise<WeatherData> {
 
 export async function requestNewTokens(): Promise<AuthorizeSuccessResponse> {
   const res: AxiosResponse<AuthorizeSuccessResponse> = await axios.post(
-    'http://localhost:8080/api/Authorization/refresh',
+    '/api/Authorization/refresh',
     {
       refreshToken: getRefreshToken(),
     }
@@ -40,7 +40,7 @@ export async function requestNewTokens(): Promise<AuthorizeSuccessResponse> {
 
 export async function requestUserData(): Promise<UserState> {
   const res: AxiosResponse<UserState> = await axios.get(
-    'http://localhost:8080/api/Authorization/info',
+    '/api/Authorization/info',
     {
       headers: {
         Authorization: `Bearer ${getToken()}`,
@@ -55,7 +55,7 @@ export async function handleGitHubAuthorization(
   code: string
 ): Promise<AuthorizeSuccessResponse> {
   const accessToken: AxiosResponse<string> = await axios.post(
-    `http://localhost:8080/api/OAuthProfiles/get-access-token?code=${code}`
+    `/api/OAuthProfiles/get-access-token?code=${code}`
   );
 
   const token = accessToken.data.substring(1).split('=')[1].split('&')[0];
@@ -70,7 +70,7 @@ export async function handleGitHubAuthorization(
   );
 
   const res: AxiosResponse<AuthorizeSuccessResponse> = await axios.post(
-    'http://localhost:8080/api/OAuthProfiles/authorize',
+    '/api/OAuthProfiles/authorize',
     {
       email: user.data[0].email,
       platform: 'GitHub',
@@ -92,7 +92,7 @@ export async function handleGoogleAuthorization(
   idToken: string
 ): Promise<AuthorizeSuccessResponse> {
   const res: AxiosResponse<AuthorizeSuccessResponse> = await axios.post(
-    'http://localhost:8080/api/OAuthProfiles/google',
+    '/api/OAuthProfiles/google',
     {
       idToken,
       email,
@@ -106,7 +106,7 @@ export async function handleGoogleAuthorization(
 
 export async function deleteAccount(): Promise<DeleteSuccessResponse> {
   const res: AxiosResponse<DeleteSuccessResponse> = await axios.delete(
-    `http://localhost:8080/api/Authorization/delete/${getRefreshToken()}`
+    `/api/Authorization/delete/${getRefreshToken()}`
   );
 
   return res.data;
