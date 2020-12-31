@@ -58,7 +58,11 @@ const GitHub: React.FC = (): JSX.Element => {
           <span>
             <i className="fab fa-github"></i>
           </span>
-          <Link href="https://github.com/login/oauth/authorize?client_id=dc66fcdec00e52ce44b8&scope=user&redirect_uri=http://localhost:3000/oauth">
+          <Link
+            href={
+              'https://github.com/login/oauth/authorize?client_id=dc66fcdec00e52ce44b8&scope=user&redirect_uri=http://ecs-lb-frontend-1727102227.us-east-1.elb.amazonaws.com/oauth'
+            }
+          >
             Click here
           </Link>
         </InnerContainer>

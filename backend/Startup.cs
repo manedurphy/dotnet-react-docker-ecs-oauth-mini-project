@@ -33,7 +33,7 @@ namespace backend
       {
         o.AddPolicy(name: MyAllowSpecificOrigins, builder =>
         {
-          builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+          builder.WithOrigins("http://localhost:3000", "http://ecs-lb-frontend-1727102227.us-east-1.elb.amazonaws.com").AllowAnyHeader().AllowAnyMethod();
         });
       });
 

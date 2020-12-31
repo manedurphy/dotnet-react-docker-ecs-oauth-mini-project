@@ -55,7 +55,7 @@ const Home: React.FC = (): JSX.Element => {
         {showData && (
           <BoxContainer>
             {protectedData.map((item, i) => (
-              <DataItem data={item} />
+              <DataItem key={i} data={item} />
             ))}
           </BoxContainer>
         )}
