@@ -8,7 +8,7 @@ export const FormContainer = styled.div`
 `;
 
 export const Form = styled.form`
-  width: 20%;
+  width: 400px;
 `;
 
 export const FormGroup = styled.div`

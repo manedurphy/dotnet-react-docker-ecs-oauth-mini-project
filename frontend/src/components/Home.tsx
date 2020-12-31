@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import DataItem from './DataItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
@@ -9,9 +10,8 @@ import { getUserData } from '../redux/slices/userSlice';
 import { deleteAccount } from '../Requests/axios';
 import { GlobalState } from '../Requests/interfaces';
 import { AlertSuccess, Link } from './LocalStrategy/local-strategy-styles';
-import { Box } from './OAuth/oauth-styles';
 
-const Home = () => {
+const Home: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
   const alerts = useSelector((state: GlobalState) => state.alerts);
   const [showData, setShowData] = useState(false);
@@ -54,16 +54,9 @@ const Home = () => {
         </p>
         {showData && (
           <BoxContainer>
-            {protectedData.map((item, i) => {
-              return (
-                <Box key={i}>
-                  <p>Date: {item.date.slice(0, 10)}</p>
-                  <p>TempC: {item.temperatureC} Degrees</p>
-                  <p>TempF: {item.temperatureF} Degrees</p>
-                  <p>Summary: {item.summary}</p>
-                </Box>
-              );
-            })}
+            {protectedData.map((item, i) => (
+              <DataItem data={item} />
+            ))}
           </BoxContainer>
         )}
         {!user.isAuthorized && <Redirect to={'/login'} />}

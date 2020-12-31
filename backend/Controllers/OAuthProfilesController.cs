@@ -56,7 +56,7 @@ namespace backend.Controllers
       User existingUser = _userService.GetByEmail(oAuthProfileSendDto.Email);
       if (existingUser != null)
       {
-        return BadRequest();
+        return BadRequest(new Alert(ResponseMessages.ResponseMessage.UserResponseMessage.UserExists));
       }
 
       using (HttpClient client = new HttpClient())
@@ -113,7 +113,7 @@ namespace backend.Controllers
       User existingUser = _userService.GetByEmail(googleIdToken.Email);
       if (existingUser != null)
       {
-        return BadRequest();
+        return BadRequest(new Alert(ResponseMessages.ResponseMessage.UserResponseMessage.UserExists));
       }
 
       using (HttpClient client = new HttpClient())
