@@ -9,10 +9,10 @@ import { AuthorizeSuccessResponse } from '../../Requests/interfaces';
 import { setOAuthLoading } from '../../redux/slices/OAuthSlice';
 import { setAlert } from '../../redux/slices/alertSlice';
 
+// const GoogleUrl =
+//   '326224736164-ju106naimcs0er3phe2jt2e1qi6jbvks.apps.googleusercontent.com';
 const GoogleUrl =
-  process.env.DEVELOPMENT === 'true'
-    ? '326224736164-ju106naimcs0er3phe2jt2e1qi6jbvks.apps.googleusercontent.com'
-    : '950293235751-kii4o3i1kqgra5jr52cgnls5nl6mb9ue.apps.googleusercontent.com';
+  '950293235751-kii4o3i1kqgra5jr52cgnls5nl6mb9ue.apps.googleusercontent.com';
 
 const Google: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();

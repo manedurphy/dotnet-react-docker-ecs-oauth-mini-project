@@ -12,10 +12,10 @@ import {
   GlobalState,
 } from '../../Requests/interfaces';
 
+// const GitHubUrl =
+//   'https://github.com/login/oauth/authorize?client_id=fcde8c7e6a393f4ef25e&scope=user&redirect_uri=http://localhost:3000/oauth';
 const GitHubUrl =
-  process.env.DEVELOPMENT === 'true'
-    ? 'https://github.com/login/oauth/authorize?client_id=fcde8c7e6a393f4ef25e&scope=user&redirect_uri=http://localhost:3000/oauth'
-    : 'https://github.com/login/oauth/authorize?client_id=dc66fcdec00e52ce44b8&scope=user&redirect_uri=http://ecs-lb-frontend-1727102227.us-east-1.elb.amazonaws.com/oauth';
+  'https://github.com/login/oauth/authorize?client_id=dc66fcdec00e52ce44b8&scope=user&redirect_uri=http://ecs-lb-frontend-1727102227.us-east-1.elb.amazonaws.com/oauth';
 
 const GitHub: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
