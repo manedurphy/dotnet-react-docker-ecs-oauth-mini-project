@@ -19,4 +19,4 @@ The React frontend and ASP.NET backend both ran in their own Docker containers f
 The user may only login using one strategy at a time (to avoid duplicate emails in database). In the protected route, there is a button at the bottom that will allow the user to delete their current credentials and login with a different strategy.
 
 LINK:
-  http://ecs-lb-frontend-1727102227.us-east-1.elb.amazonaws.com/
+  http://ecs-lb-frontend-1727102227.us-east-1.elb.amazonaws.com/ (no longer active)
